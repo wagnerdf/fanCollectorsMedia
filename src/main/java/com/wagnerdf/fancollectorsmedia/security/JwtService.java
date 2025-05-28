@@ -5,6 +5,8 @@ import java.util.Date;
 
 import org.springframework.stereotype.Service;
 
+import com.wagnerdf.fancollectorsmedia.model.Usuario;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -17,10 +19,13 @@ public class JwtService {
 
 	private static final String SECRET_KEY = "12345678901234567890123456789012"; // 32 chars (256 bits)
 
-	public String generateToken(String username) {
-		return Jwts.builder().setSubject(username).setIssuedAt(new Date(System.currentTimeMillis()))
-				.setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 2)) // 2h
-				.signWith(getSignKey(), SignatureAlgorithm.HS256).compact();
+	public String generateToken(Usuario usuario) {
+		return Jwts.builder()
+			    .setSubject(usuario.getEmail()) // ou .getUsername(), se for o caso
+			    .setIssuedAt(new Date(System.currentTimeMillis()))
+			    .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 2)) // 2 horas
+			    .signWith(getSignKey(), SignatureAlgorithm.HS256)
+			    .compact();
 	}
 
 	public String extractUsername(String token) {
