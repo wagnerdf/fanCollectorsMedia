@@ -29,7 +29,6 @@ public class Usuario implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-	// Relacionamento com UsuarioCadastro
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_cadastro_id")
     private UsuarioCadastro usuarioCadastro;
@@ -104,7 +103,6 @@ public class Usuario implements UserDetails {
 		return Objects.equals(id, other.id);
 	}
     
-    ////
 	@Override
 	public String getPassword() {
 	    return senha;  // sua senha
@@ -134,7 +132,4 @@ public class Usuario implements UserDetails {
 	public boolean isEnabled() {
 	    return true; // ou lógica para verificar se o usuário está ativo
 	}
-
-
-
 }
