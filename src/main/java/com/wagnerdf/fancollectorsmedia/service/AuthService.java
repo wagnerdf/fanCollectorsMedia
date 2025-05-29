@@ -32,13 +32,13 @@ public class AuthService {
     public AuthResponseDto login(AuthRequestDto request) {
         try {
             authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getSenha())
+                new UsernamePasswordAuthenticationToken(request.getLogin(), request.getSenha())
             );
         } catch (AuthenticationException e) {
             throw new RuntimeException("Credenciais inválidas");
         }
 
-        Usuario usuario = usuarioRepository.findByEmail(request.getEmail())
+        Usuario usuario = usuarioRepository.findByLogin(request.getLogin())
             .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
         String token = jwtService.generateToken(usuario);
@@ -46,12 +46,11 @@ public class AuthService {
     }
 
     public AuthResponseDto register(RegisterRequestDto request) {
-        Usuario usuario = Usuario.builder()
-            .nome(request.getNome())
-            .email(request.getEmail())
-            .senha(passwordEncoder.encode(request.getSenha()))
-            .papel("ROLE_USER")
-            .build();
+    	Usuario usuario = Usuario.builder()
+    		    .login(request.getLogin()) // agora o login é o campo onde guardamos o e-mail
+    		    .senha(passwordEncoder.encode(request.getSenha()))
+    		    .papel("ROLE_USER")
+    		    .build();
 
         usuarioRepository.save(usuario);
         String token = jwtService.generateToken(usuario);

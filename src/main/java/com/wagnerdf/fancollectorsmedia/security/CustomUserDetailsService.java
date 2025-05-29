@@ -11,13 +11,13 @@ import com.wagnerdf.fancollectorsmedia.repository.UsuarioRepository;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-	@Autowired
+    @Autowired
     private UsuarioRepository usuarioRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return usuarioRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + username));
+    public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
+        return usuarioRepository.findByLogin(login)
+            .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com o login: " + login));
     }
 }
 

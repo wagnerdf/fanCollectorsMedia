@@ -2,12 +2,12 @@ package com.wagnerdf.fancollectorsmedia.model;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Objects;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -17,10 +17,16 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(name = "usuario")
 public class Usuario implements UserDetails {
     private static final long serialVersionUID = 1L;
@@ -33,6 +39,7 @@ public class Usuario implements UserDetails {
     @JoinColumn(name = "usuario_cadastro_id")
     private UsuarioCadastro usuarioCadastro;
 
+    @Column(unique = true)
     @NotBlank(message = "Login não pode ser vazio")
     private String login; // será o email do usuário
     
@@ -46,63 +53,6 @@ public class Usuario implements UserDetails {
         return Collections.singletonList(new SimpleGrantedAuthority(papel));
     }
 
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public UsuarioCadastro getUsuarioCadastro() {
-		return usuarioCadastro;
-	}
-
-	public void setUsuarioCadastro(UsuarioCadastro usuarioCadastro) {
-		this.usuarioCadastro = usuarioCadastro;
-	}
-
-	public String getLogin() {
-		return login;
-	}
-
-	public void setLogin(String login) {
-		this.login = login;
-	}
-
-	public String getSenha() {
-		return senha;
-	}
-
-	public void setSenha(String senha) {
-		this.senha = senha;
-	}
-
-	public String getPapel() {
-		return papel;
-	}
-
-	public void setPapel(String papel) {
-		this.papel = papel;
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(id);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Usuario other = (Usuario) obj;
-		return Objects.equals(id, other.id);
-	}
-    
 	@Override
 	public String getPassword() {
 	    return senha;  // sua senha
@@ -110,7 +60,7 @@ public class Usuario implements UserDetails {
 
 	@Override
 	public String getUsername() {
-	    return login;  // seu login, que é o username
+	    return login;  // seu login, que é o email
 	}
 
 	@Override
