@@ -36,14 +36,14 @@ public class Usuario implements UserDetails {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "usuario_cadastro_id")
-    private UsuarioCadastro usuarioCadastro;
+    @JoinColumn(name = "cadastro_id")
+    private Cadastro cadastro;
 
     @Column(unique = true)
     @NotBlank(message = "Login não pode ser vazio")
     private String login; // será o email do usuário
     
-    @NotBlank(message = "Login não pode ser vazio")
+    @NotBlank(message = "Senha não pode ser vazio")
     private String senha;
 
     private String papel; // Exemplo: "ROLE_USER", "ROLE_ADMIN"

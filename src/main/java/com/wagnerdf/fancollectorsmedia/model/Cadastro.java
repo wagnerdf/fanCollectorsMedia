@@ -20,8 +20,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
 
 @Entity
-@Table(name = "usuario_cadastro")
-public class UsuarioCadastro implements Serializable {
+@Table(name = "cadastro")
+public class Cadastro implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -57,7 +57,7 @@ public class UsuarioCadastro implements Serializable {
 	@Enumerated(EnumType.STRING)
 	private StatusUsuario status;
 
-	public UsuarioCadastro() {
+	public Cadastro() {
 	}
 
 	public Long getId() {
@@ -169,7 +169,7 @@ public class UsuarioCadastro implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		UsuarioCadastro other = (UsuarioCadastro) obj;
+		Cadastro other = (Cadastro) obj;
 		return Objects.equals(id, other.id);
 	}
 
