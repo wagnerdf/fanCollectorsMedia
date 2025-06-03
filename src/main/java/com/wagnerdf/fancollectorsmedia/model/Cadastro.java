@@ -3,6 +3,8 @@ package com.wagnerdf.fancollectorsmedia.model;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import com.wagnerdf.fancollectorsmedia.model.enums.StatusUsuario;
@@ -14,6 +16,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -48,8 +51,6 @@ public class Cadastro implements Serializable {
 	@Column(unique = true)
 	private String email;
 
-	private String hobby;
-
 	private LocalDateTime dataCadastro;
 
 	private String avatarUrl;
@@ -57,7 +58,18 @@ public class Cadastro implements Serializable {
 	@Enumerated(EnumType.STRING)
 	private StatusUsuario status;
 
+	@OneToMany(mappedBy = "cadastro")
+	private List<CadastroHobby> hobbies = new ArrayList<>();
+
 	public Cadastro() {
+	}
+
+	public List<CadastroHobby> getHobbies() {
+		return hobbies;
+	}
+
+	public void setHobbies(List<CadastroHobby> hobbies) {
+		this.hobbies = hobbies;
 	}
 
 	public Long getId() {
@@ -122,14 +134,6 @@ public class Cadastro implements Serializable {
 
 	public void setEmail(String email) {
 		this.email = email;
-	}
-
-	public String getHobby() {
-		return hobby;
-	}
-
-	public void setHobby(String hobby) {
-		this.hobby = hobby;
 	}
 
 	public LocalDateTime getDataCadastro() {
