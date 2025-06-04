@@ -46,11 +46,13 @@ public class Usuario implements UserDetails {
     @NotBlank(message = "Senha não pode ser vazio")
     private String senha;
 
-    private String papel; // Exemplo: "ROLE_USER", "ROLE_ADMIN"
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "papel_id", nullable = false)
+    private Papel papel; // Exemplo: "ROLE_USER", "ROLE_ADMIN"
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority(papel));
+        return Collections.singletonList(new SimpleGrantedAuthority(papel.getNome()));
     }
 
 	@Override

@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import com.wagnerdf.fancollectorsmedia.dto.AuthRequestDto;
 import com.wagnerdf.fancollectorsmedia.dto.AuthResponseDto;
 import com.wagnerdf.fancollectorsmedia.dto.RegisterRequestDto;
+import com.wagnerdf.fancollectorsmedia.model.Papel;
 import com.wagnerdf.fancollectorsmedia.model.Usuario;
+import com.wagnerdf.fancollectorsmedia.repository.PapelRepository;
 import com.wagnerdf.fancollectorsmedia.repository.UsuarioRepository;
 import com.wagnerdf.fancollectorsmedia.security.JwtService;
 
@@ -28,6 +30,9 @@ public class AuthService {
 
     @Autowired
     private AuthenticationManager authenticationManager;
+    
+    @Autowired
+    private PapelRepository papelRepository;
 
     public AuthResponseDto login(AuthRequestDto request) {
         try {
@@ -44,12 +49,15 @@ public class AuthService {
         String token = jwtService.generateToken(usuario);
         return new AuthResponseDto(token);
     }
-
+    
+  
     public AuthResponseDto register(RegisterRequestDto request) {
+    	 Papel papel = papelRepository.findByNome("ROLE_USER")
+    	    	    .orElseThrow(() -> new RuntimeException("Papel ROLE_USER não encontrado"));
     	Usuario usuario = Usuario.builder()
     		    .login(request.getLogin()) // agora o login é o campo onde guardamos o e-mail
     		    .senha(passwordEncoder.encode(request.getSenha()))
-    		    .papel("ROLE_USER")
+    		    .papel(papel)
     		    .build();
 
         usuarioRepository.save(usuario);
