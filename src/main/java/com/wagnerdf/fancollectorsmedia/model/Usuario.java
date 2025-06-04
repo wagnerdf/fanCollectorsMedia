@@ -16,6 +16,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,6 +42,7 @@ public class Usuario implements UserDetails {
 
     @Column(unique = true)
     @NotBlank(message = "Login não pode ser vazio")
+    @Email(message = "Formato de e-mail inválido")
     private String login; // será o email do usuário
     
     @NotBlank(message = "Senha não pode ser vazio")
