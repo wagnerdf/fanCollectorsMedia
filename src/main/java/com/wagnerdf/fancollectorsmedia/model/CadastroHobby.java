@@ -26,7 +26,7 @@ public class CadastroHobby implements Serializable {
 	private Cadastro cadastro;
 
 	@ManyToOne
-	@JoinColumn(name = "hobby_id", nullable = false)
+	@JoinColumn(name = "hobby_id", nullable = true)
 	private Hobby hobby;
 
 	private LocalDateTime dataRegistro = LocalDateTime.now();
