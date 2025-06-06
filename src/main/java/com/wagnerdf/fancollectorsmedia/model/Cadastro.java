@@ -31,13 +31,13 @@ public class Cadastro implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@NotBlank
+	@NotBlank(message = "O nome é obrigatório.")
 	private String nome;
 
-	@NotBlank
+	@NotBlank(message = "O sobrenome é obrigatório.")
 	private String sobreNome;
 
-	@Past
+	@Past(message = "A data de nascimento deve estar no passado.")
 	private LocalDate dataNascimento;
 
 	private String sexo;
@@ -48,8 +48,8 @@ public class Cadastro implements Serializable {
 
 	private String telefone;
 
-	@Email
-	@NotBlank
+	@Email(message = "E-mail inválido.")
+    @NotBlank(message = "O e-mail é obrigatório.")
 	@Column(unique = true)
 	private String email;
 
