@@ -8,7 +8,20 @@ import java.util.List;
 
 import com.wagnerdf.fancollectorsmedia.model.enums.StatusUsuario;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
@@ -42,7 +55,7 @@ public class Cadastro implements Serializable {
 
 	private String sexo;
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = false)
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, optional = false, orphanRemoval = true)
 	@JoinColumn(name = "endereco_id", referencedColumnName = "id")
 	private Endereco endereco;
 
@@ -56,6 +69,10 @@ public class Cadastro implements Serializable {
 	private LocalDateTime dataCadastro;
 
 	private String avatarUrl;
+	
+	@Transient // ← Essa anotação JPA impede que a propriedade seja persistida no banco
+	@NotBlank(message = "A senha é obrigatória.")
+	private String senha;
 
 	@Enumerated(EnumType.STRING)
 	private StatusUsuario status;

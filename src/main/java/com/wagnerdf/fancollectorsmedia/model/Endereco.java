@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,12 +21,24 @@ public class Endereco {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	private String rua;
+	@NotBlank(message = "A rua é obrigatória.")
+    private String rua;
+
+    @NotBlank(message = "O número é obrigatório.")
     private String numero;
+
     private String complemento;
+
+    @NotBlank(message = "O bairro é obrigatório.")
     private String bairro;
+
+    @NotBlank(message = "A cidade é obrigatória.")
     private String cidade;
+
+    @NotBlank(message = "O estado é obrigatório.")
     private String estado;
+
+    @NotBlank(message = "O CEP é obrigatório.")
     private String cep;
 
 }

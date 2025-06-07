@@ -21,9 +21,7 @@ public class JwtService {
 
 	private static final String SECRET_KEY = "12345678901234567890123456789012"; // 32 chars (256 bits)
 	
-	//private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 2; // 2 hora
-	
-	private static final long EXPIRATION_TIME = 1000 * 20; // 10 segundos para teste
+	private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 2; // 2 hora
 
 	public String generateToken(Usuario usuario) {
 		return Jwts.builder()
