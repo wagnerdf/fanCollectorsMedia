@@ -9,4 +9,7 @@ import com.wagnerdf.fancollectorsmedia.model.enums.StatusUsuario;
 
 public interface CadastroRepository extends JpaRepository<Cadastro, Long>{
 	List<Cadastro>findByStatus(StatusUsuario status);
+	
+	boolean existsByEmail(String email);
+	
 }

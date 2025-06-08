@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.wagnerdf.fancollectorsmedia.exception.EmailDuplicadoException;
 import com.wagnerdf.fancollectorsmedia.model.Cadastro;
 import com.wagnerdf.fancollectorsmedia.model.Endereco;
 import com.wagnerdf.fancollectorsmedia.model.Papel;
@@ -24,9 +25,6 @@ public class CadastroService {
     private CadastroRepository cadastroRepository;
 
     @Autowired
-    private EnderecoRepository enderecoRepository;
-
-    @Autowired
     private UsuarioRepository usuarioRepository;
 
     @Autowired
@@ -38,7 +36,13 @@ public class CadastroService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+
     public Cadastro salvarCadastroCompleto(Cadastro cadastro) {
+    	
+    	 if (cadastroRepository.existsByEmail(cadastro.getEmail())) {
+             throw new EmailDuplicadoException("Email já está em uso. Por favor, use outro email.");
+    	 }
+    	
         if (cadastro.getSenha() == null || cadastro.getSenha().isBlank()) {
             throw new IllegalArgumentException("Senha é obrigatória.");
         }
