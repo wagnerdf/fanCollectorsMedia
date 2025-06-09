@@ -18,6 +18,7 @@ import com.wagnerdf.fancollectorsmedia.model.Cadastro;
 import com.wagnerdf.fancollectorsmedia.model.CadastroHobby;
 import com.wagnerdf.fancollectorsmedia.model.Endereco;
 import com.wagnerdf.fancollectorsmedia.model.Hobby;
+import com.wagnerdf.fancollectorsmedia.model.enums.StatusUsuario;
 import com.wagnerdf.fancollectorsmedia.repository.HobbyRepository;
 import com.wagnerdf.fancollectorsmedia.service.CadastroService;
 
@@ -46,6 +47,11 @@ public class CadastroController {
         cadastro.setEmail(requestDto.getEmail());
         cadastro.setAvatarUrl(requestDto.getAvatarUrl());
         cadastro.setSenha(requestDto.getSenha());
+        if (requestDto.getStatus() != null) {
+            cadastro.setStatus(requestDto.getStatus());
+        } else {
+            cadastro.setStatus(StatusUsuario.ATIVO);
+        }
 
         // Endereço
         Endereco endereco = new Endereco();

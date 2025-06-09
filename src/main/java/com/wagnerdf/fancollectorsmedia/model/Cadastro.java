@@ -75,6 +75,7 @@ public class Cadastro implements Serializable {
 	private String senha;
 
 	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
 	private StatusUsuario status;
 
 	@OneToMany(mappedBy = "cadastro")

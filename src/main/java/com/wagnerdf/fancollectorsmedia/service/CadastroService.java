@@ -47,7 +47,6 @@ public class CadastroService {
         }
 
         cadastro.setDataCadastro(LocalDateTime.now());
-        cadastro.setStatus(StatusUsuario.ATIVO);
 
         // 🔐 Salva o endereço ANTES de setar no cadastro
         Endereco endereco = cadastro.getEndereco();

@@ -3,6 +3,8 @@ package com.wagnerdf.fancollectorsmedia.dto;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.wagnerdf.fancollectorsmedia.model.enums.StatusUsuario;
+
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -38,6 +40,8 @@ public class CadastroRequestDto {
 
     @Valid
     private EnderecoDto endereco;
+    
+    private StatusUsuario status;
 
     @Valid
     private List<CadastroHobbyDto> hobbies;
