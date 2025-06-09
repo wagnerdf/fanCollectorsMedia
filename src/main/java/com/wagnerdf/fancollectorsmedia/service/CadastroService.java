@@ -14,7 +14,6 @@ import com.wagnerdf.fancollectorsmedia.model.Usuario;
 import com.wagnerdf.fancollectorsmedia.model.enums.StatusUsuario;
 import com.wagnerdf.fancollectorsmedia.repository.CadastroHobbyRepository;
 import com.wagnerdf.fancollectorsmedia.repository.CadastroRepository;
-import com.wagnerdf.fancollectorsmedia.repository.EnderecoRepository;
 import com.wagnerdf.fancollectorsmedia.repository.PapelRepository;
 import com.wagnerdf.fancollectorsmedia.repository.UsuarioRepository;
 
