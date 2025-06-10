@@ -11,7 +11,6 @@ import com.wagnerdf.fancollectorsmedia.model.Cadastro;
 import com.wagnerdf.fancollectorsmedia.model.Endereco;
 import com.wagnerdf.fancollectorsmedia.model.Papel;
 import com.wagnerdf.fancollectorsmedia.model.Usuario;
-import com.wagnerdf.fancollectorsmedia.model.enums.StatusUsuario;
 import com.wagnerdf.fancollectorsmedia.repository.CadastroHobbyRepository;
 import com.wagnerdf.fancollectorsmedia.repository.CadastroRepository;
 import com.wagnerdf.fancollectorsmedia.repository.PapelRepository;
@@ -77,4 +76,10 @@ public class CadastroService {
 
         return cadastroSalvo;
     }
+    
+    public Cadastro buscarPorUsername(String username) {
+        return cadastroRepository.findByEmail(username)
+            .orElseThrow(() -> new RuntimeException("Cadastro não encontrado: " + username));
+    }
+
 }

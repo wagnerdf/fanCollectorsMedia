@@ -27,8 +27,9 @@ public class MidiaTipoService {
 		return midiaTipoRepository.existsByNome(nome);
 	}
 	
-	public Optional<MidiaTipo> buscarPorId(Long id){
-		return midiaTipoRepository.findById(id);
+	public MidiaTipo buscarPorId(Long id) {
+	    return midiaTipoRepository.findById(id)
+	        .orElseThrow(() -> new RuntimeException("MidiaTipo não encontrado com ID: " + id));
 	}
 	
 	public void deletarPorId(Long id) {

@@ -1,6 +1,7 @@
 package com.wagnerdf.fancollectorsmedia.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -11,5 +12,7 @@ public interface CadastroRepository extends JpaRepository<Cadastro, Long>{
 	List<Cadastro>findByStatus(StatusUsuario status);
 	
 	boolean existsByEmail(String email);
+	
+	Optional<Cadastro> findByEmail(String email);
 	
 }
