@@ -55,4 +55,17 @@ public class MidiaService {
 
 		return midiaRepository.save(midia);
 	}
+	
+	public void deletarMidia(Long id, String username) {
+	    Midia midia = midiaRepository.findById(id)
+	        .orElseThrow(() -> new RuntimeException("Mídia não encontrada"));
+
+	    // Verifica se a mídia pertence ao usuário logado
+	    if (!midia.getCadastro().getEmail().equals(username)) {
+	        throw new RuntimeException("Você não tem permissão para deletar esta mídia.");
+	    }
+
+	    midiaRepository.delete(midia);
+	}
+
 }
