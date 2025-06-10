@@ -1,9 +1,12 @@
 package com.wagnerdf.fancollectorsmedia.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.wagnerdf.fancollectorsmedia.dto.MidiaRequestDto;
+import com.wagnerdf.fancollectorsmedia.dto.MidiaResponseDto;
 import com.wagnerdf.fancollectorsmedia.model.Cadastro;
 import com.wagnerdf.fancollectorsmedia.model.Midia;
 import com.wagnerdf.fancollectorsmedia.model.MidiaTipo;
@@ -55,17 +58,61 @@ public class MidiaService {
 
 		return midiaRepository.save(midia);
 	}
-	
+
 	public void deletarMidia(Long id, String username) {
-	    Midia midia = midiaRepository.findById(id)
-	        .orElseThrow(() -> new RuntimeException("Mídia não encontrada"));
+		Midia midia = midiaRepository.findById(id).orElseThrow(() -> new RuntimeException("Mídia não encontrada"));
 
-	    // Verifica se a mídia pertence ao usuário logado
-	    if (!midia.getCadastro().getEmail().equals(username)) {
-	        throw new RuntimeException("Você não tem permissão para deletar esta mídia.");
-	    }
+		// Verifica se a mídia pertence ao usuário logado
+		if (!midia.getCadastro().getEmail().equals(username)) {
+			throw new RuntimeException("Você não tem permissão para deletar esta mídia.");
+		}
 
-	    midiaRepository.delete(midia);
+		midiaRepository.delete(midia);
+	}
+
+	public List<MidiaResponseDto> listarMidiasDoUsuario(String username) {
+		Cadastro cadastro = cadastroService.buscarPorUsername(username);
+		return midiaRepository.findByCadastro(cadastro).stream().map(this::toDto).toList();
+	}
+
+	public MidiaResponseDto buscarMidiaPorId(Long id, String username) {
+		Midia midia = midiaRepository.findById(id).orElseThrow(() -> new RuntimeException("Mídia não encontrada"));
+
+		if (!midia.getCadastro().getEmail().equals(username)) {
+			throw new RuntimeException("Você não tem permissão para visualizar esta mídia.");
+		}
+
+		return toDto(midia);
+	}
+
+	private MidiaResponseDto toDto(Midia midia) {
+		MidiaResponseDto dto = new MidiaResponseDto();
+
+		dto.setId(midia.getId());
+		dto.setNome(midia.getNome());
+		dto.setTituloOriginal(midia.getTituloOriginal());
+		dto.setTituloAlternativo(midia.getTituloAlternativo());
+		dto.setEdicao(midia.getEdicao());
+		dto.setColecao(midia.getColecao());
+		dto.setNumeroSerie(midia.getNumeroSerie());
+		dto.setRegiao(midia.getRegiao());
+		dto.setFaixas(midia.getFaixas());
+		dto.setClassificacaoEtaria(midia.getClassificacaoEtaria());
+		dto.setArtistaDiretor(midia.getArtistaDiretor());
+		dto.setEstudio(midia.getEstudio());
+		dto.setMidiaDigitalInclusa(midia.getMidiaDigitalInclusa());
+		dto.setFormatoAudio(midia.getFormatoAudio());
+		dto.setFormatoVideo(midia.getFormatoVideo());
+		dto.setObservacoes(midia.getObservacoes());
+		dto.setQuantidadeItens(midia.getQuantidadeItens());
+		dto.setEstadoConservacao(midia.getEstadoConservacao());
+		dto.setAnoLancamento(midia.getAnoLancamento());
+		dto.setAdquiridoEm(midia.getAdquiridoEm());
+		dto.setValorPago(midia.getValorPago());
+		dto.setCapaUrl(midia.getCapaUrl());
+		dto.setTipoMidia(midia.getMidiaTipo().getNome());
+
+		return dto;
 	}
 
 }
