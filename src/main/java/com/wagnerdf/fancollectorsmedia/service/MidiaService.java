@@ -114,5 +114,43 @@ public class MidiaService {
 
 		return dto;
 	}
+	
+	public Midia editarMidia(Long id, MidiaRequestDto dto, String username) {
+	    Midia midia = midiaRepository.findById(id)
+	            .orElseThrow(() -> new RuntimeException("Mídia não encontrada"));
+
+	    if (!midia.getCadastro().getEmail().equals(username)) {
+	        throw new RuntimeException("Você não tem permissão para editar esta mídia.");
+	    }
+
+	    MidiaTipo midiaTipo = midiaTipoService.buscarPorId(dto.getMidiaTipoId());
+
+	    // Atualiza os campos
+	    midia.setNome(dto.getNome());
+	    midia.setTituloOriginal(dto.getTituloOriginal());
+	    midia.setTituloAlternativo(dto.getTituloAlternativo());
+	    midia.setEdicao(dto.getEdicao());
+	    midia.setColecao(dto.getColecao());
+	    midia.setNumeroSerie(dto.getNumeroSerie());
+	    midia.setRegiao(dto.getRegiao());
+	    midia.setFaixas(dto.getFaixas());
+	    midia.setClassificacaoEtaria(dto.getClassificacaoEtaria());
+	    midia.setArtistaDiretor(dto.getArtistaDiretor());
+	    midia.setEstudio(dto.getEstudio());
+	    midia.setMidiaDigitalInclusa(dto.getMidiaDigitalInclusa());
+	    midia.setFormatoAudio(dto.getFormatoAudio());
+	    midia.setFormatoVideo(dto.getFormatoVideo());
+	    midia.setObservacoes(dto.getObservacoes());
+	    midia.setQuantidadeItens(dto.getQuantidadeItens());
+	    midia.setEstadoConservacao(dto.getEstadoConservacao());
+	    midia.setAnoLancamento(dto.getAnoLancamento());
+	    midia.setAdquiridoEm(dto.getAdquiridoEm());
+	    midia.setValorPago(dto.getValorPago());
+	    midia.setCapaUrl(dto.getCapaUrl());
+	    midia.setMidiaTipo(midiaTipo);
+
+	    return midiaRepository.save(midia);
+	}
+
 
 }

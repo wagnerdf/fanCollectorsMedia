@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -53,5 +54,15 @@ public class MidiaController {
 		MidiaResponseDto midia = midiaService.buscarMidiaPorId(id, username);
 		return ResponseEntity.ok(midia);
 	}
+	
+	@PutMapping("/{id}")
+	public ResponseEntity<String> atualizarMidia(@PathVariable Long id,
+	                                             @RequestBody MidiaRequestDto dto,
+	                                             Authentication authentication) {
+	    String username = authentication.getName();
+	    midiaService.editarMidia(id, dto, username);
+	    return ResponseEntity.ok("Mídia atualizada com sucesso");
+	}
+
 
 }
