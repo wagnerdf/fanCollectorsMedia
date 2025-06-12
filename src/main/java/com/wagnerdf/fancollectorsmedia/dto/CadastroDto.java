@@ -3,6 +3,7 @@ package com.wagnerdf.fancollectorsmedia.dto;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.wagnerdf.fancollectorsmedia.model.Cadastro;
 import com.wagnerdf.fancollectorsmedia.model.enums.StatusUsuario;
 
 import jakarta.validation.constraints.Email;
@@ -46,4 +47,19 @@ public class CadastroDto {
     private StatusUsuario status;
 
     private List<Long> hobbiesIds; // Representa os hobbies por ID, para facilitar em requests
+    
+   
+    public CadastroDto(Cadastro cadastro) {
+        this.id = cadastro.getId();
+        this.nome = cadastro.getNome();
+        this.email = cadastro.getEmail();
+		this.sobreNome = cadastro.getSobreNome();
+		this.dataNascimento = cadastro.getDataNascimento();
+		this.sexo = cadastro.getSexo();
+		//this.endereco = cadastro.getEndereco();
+		this.telefone = cadastro.getTelefone();
+		this.avatarUrl = cadastro.getAvatarUrl();
+		//this.status = status;
+		//this.hobbiesIds = hobbiesIds;
+    }
 }

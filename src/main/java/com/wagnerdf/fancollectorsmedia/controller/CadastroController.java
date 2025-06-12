@@ -6,12 +6,16 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.wagnerdf.fancollectorsmedia.dto.CadastroDto;
 import com.wagnerdf.fancollectorsmedia.dto.CadastroHobbyDto;
 import com.wagnerdf.fancollectorsmedia.dto.CadastroRequestDto;
 import com.wagnerdf.fancollectorsmedia.model.Cadastro;
@@ -29,66 +33,74 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/cadastros")
 public class CadastroController {
 
-    @Autowired
-    private CadastroService cadastroService;
+	@Autowired
+	private CadastroService cadastroService;
 
-    @Autowired
-    private HobbyRepository hobbyRepository;
+	@Autowired
+	private HobbyRepository hobbyRepository;
 
-    @PostMapping
-    public ResponseEntity<Cadastro> registrarCadastro(@Valid @RequestBody CadastroRequestDto requestDto) {
+	@PostMapping
+	public ResponseEntity<Cadastro> registrarCadastro(@Valid @RequestBody CadastroRequestDto requestDto) {
 
-        Cadastro cadastro = new Cadastro();
-        cadastro.setNome(requestDto.getNome());
-        cadastro.setSobreNome(requestDto.getSobreNome());
-        cadastro.setDataNascimento(requestDto.getDataNascimento());
-        cadastro.setSexo(requestDto.getSexo());
-        cadastro.setTelefone(requestDto.getTelefone());
-        cadastro.setEmail(requestDto.getEmail());
-        cadastro.setAvatarUrl(requestDto.getAvatarUrl());
-        cadastro.setSenha(requestDto.getSenha());
-        if (requestDto.getStatus() != null) {
-            cadastro.setStatus(requestDto.getStatus());
-        } else {
-            cadastro.setStatus(StatusUsuario.ATIVO);
-        }
+		Cadastro cadastro = new Cadastro();
+		cadastro.setNome(requestDto.getNome());
+		cadastro.setSobreNome(requestDto.getSobreNome());
+		cadastro.setDataNascimento(requestDto.getDataNascimento());
+		cadastro.setSexo(requestDto.getSexo());
+		cadastro.setTelefone(requestDto.getTelefone());
+		cadastro.setEmail(requestDto.getEmail());
+		cadastro.setAvatarUrl(requestDto.getAvatarUrl());
+		cadastro.setSenha(requestDto.getSenha());
+		if (requestDto.getStatus() != null) {
+			cadastro.setStatus(requestDto.getStatus());
+		} else {
+			cadastro.setStatus(StatusUsuario.ATIVO);
+		}
 
-        // Endereço
-        Endereco endereco = new Endereco();
-        endereco.setRua(requestDto.getEndereco().getRua());
-        endereco.setNumero(requestDto.getEndereco().getNumero());
-        endereco.setComplemento(requestDto.getEndereco().getComplemento());
-        endereco.setBairro(requestDto.getEndereco().getBairro());
-        endereco.setCidade(requestDto.getEndereco().getCidade());
-        endereco.setEstado(requestDto.getEndereco().getEstado());
-        endereco.setCep(requestDto.getEndereco().getCep());
-        endereco.setId(null); // evita erro detached entity
-        cadastro.setEndereco(endereco);
+		// Endereço
+		Endereco endereco = new Endereco();
+		endereco.setRua(requestDto.getEndereco().getRua());
+		endereco.setNumero(requestDto.getEndereco().getNumero());
+		endereco.setComplemento(requestDto.getEndereco().getComplemento());
+		endereco.setBairro(requestDto.getEndereco().getBairro());
+		endereco.setCidade(requestDto.getEndereco().getCidade());
+		endereco.setEstado(requestDto.getEndereco().getEstado());
+		endereco.setCep(requestDto.getEndereco().getCep());
+		endereco.setId(null); // evita erro detached entity
+		cadastro.setEndereco(endereco);
 
-        // Hobbies (opcional)
-        if (requestDto.getHobbies() != null && !requestDto.getHobbies().isEmpty()) {
-            List<CadastroHobby> cadastroHobbies = new ArrayList<>();
-            for (CadastroHobbyDto hobbyDto : requestDto.getHobbies()) {
+		// Hobbies (opcional)
+		if (requestDto.getHobbies() != null && !requestDto.getHobbies().isEmpty()) {
+			List<CadastroHobby> cadastroHobbies = new ArrayList<>();
+			for (CadastroHobbyDto hobbyDto : requestDto.getHobbies()) {
 
-                // Validação nível de interesse entre 1 e 5
-                int nivel = hobbyDto.getNivelInteresse();
-                if (nivel < 1 || nivel > 5) {
-                    throw new IllegalArgumentException("Nível de interesse deve ser entre 1 e 5.");
-                }
+				// Validação nível de interesse entre 1 e 5
+				int nivel = hobbyDto.getNivelInteresse();
+				if (nivel < 1 || nivel > 5) {
+					throw new IllegalArgumentException("Nível de interesse deve ser entre 1 e 5.");
+				}
 
-                Hobby hobby = hobbyRepository.findById(hobbyDto.getHobbyId())
-                        .orElseThrow(() -> new RuntimeException("Hobby não encontrado com ID: " + hobbyDto.getHobbyId()));
+				Hobby hobby = hobbyRepository.findById(hobbyDto.getHobbyId()).orElseThrow(
+						() -> new RuntimeException("Hobby não encontrado com ID: " + hobbyDto.getHobbyId()));
 
-                CadastroHobby ch = new CadastroHobby();
-                ch.setHobby(hobby);
-                ch.setNivelInteresse(nivel);
-                ch.setCadastro(cadastro);
-                cadastroHobbies.add(ch);
-            }
-            cadastro.setHobbies(cadastroHobbies);
-        }
+				CadastroHobby ch = new CadastroHobby();
+				ch.setHobby(hobby);
+				ch.setNivelInteresse(nivel);
+				ch.setCadastro(cadastro);
+				cadastroHobbies.add(ch);
+			}
+			cadastro.setHobbies(cadastroHobbies);
+		}
 
-        Cadastro cadastroSalvo = cadastroService.salvarCadastroCompleto(cadastro);
-        return ResponseEntity.status(HttpStatus.CREATED).body(cadastroSalvo);
-    }
+		Cadastro cadastroSalvo = cadastroService.salvarCadastroCompleto(cadastro);
+		return ResponseEntity.status(HttpStatus.CREATED).body(cadastroSalvo);
+	}
+
+	@GetMapping("/perfil")
+	public ResponseEntity<CadastroDto> getPerfil(@AuthenticationPrincipal UserDetails userDetails) {
+		System.out.println("Usuário autenticado: " + userDetails.getUsername());
+		Cadastro usuario = cadastroService.buscarPorEmail(userDetails.getUsername());
+		return ResponseEntity.ok(new CadastroDto(usuario));
+	}
+
 }

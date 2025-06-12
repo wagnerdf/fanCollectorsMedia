@@ -3,6 +3,7 @@ package com.wagnerdf.fancollectorsmedia.service;
 import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -80,6 +81,11 @@ public class CadastroService {
     public Cadastro buscarPorUsername(String username) {
         return cadastroRepository.findByEmail(username)
             .orElseThrow(() -> new RuntimeException("Cadastro não encontrado: " + username));
+    }
+    
+    public Cadastro buscarPorEmail(String email) {
+        return cadastroRepository.findByEmail(email)
+            .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
     }
 
 }
