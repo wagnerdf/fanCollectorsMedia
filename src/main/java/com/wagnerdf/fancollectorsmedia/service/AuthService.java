@@ -2,8 +2,11 @@ package com.wagnerdf.fancollectorsmedia.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -34,21 +37,26 @@ public class AuthService {
 
 	@Autowired
 	private PapelRepository papelRepository;
+	
+	@Autowired
+	private UserDetailsService userDetailsService;
 
 	public AuthResponseDto login(AuthRequestDto request) {
-		try {
-			authenticationManager
-					.authenticate(new UsernamePasswordAuthenticationToken(request.getLogin(), request.getSenha()));
-		} catch (AuthenticationException e) {
-			throw new RuntimeException("Credenciais inválidas");
-		}
+	    try {
+	        authenticationManager.authenticate(
+	            new UsernamePasswordAuthenticationToken(request.getLogin(), request.getSenha())
+	        );
 
-		Usuario usuario = usuarioRepository.findByLogin(request.getLogin())
-				.orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+	        UserDetails user = userDetailsService.loadUserByUsername(request.getLogin());
+	        String token = jwtService.generateToken(user);
 
-		String token = jwtService.generateToken(usuario);
-		return new AuthResponseDto(token);
+	        return new AuthResponseDto(token, "Login efetuado com sucesso");
+
+	    } catch (AuthenticationException e) {
+	        throw new BadCredentialsException("Login ou senha incorretos");
+	    }
 	}
+
 
 	public AuthResponseDto register(RegisterRequestDto request) {
 

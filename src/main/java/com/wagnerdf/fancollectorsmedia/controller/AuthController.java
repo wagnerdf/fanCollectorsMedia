@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,7 +39,12 @@ public class AuthController {
 
 	@PostMapping("/login")
 	public ResponseEntity<AuthResponseDto> login(@Valid @RequestBody AuthRequestDto request) {
-		return ResponseEntity.ok(authService.login(request));
+	    try {
+	        return ResponseEntity.ok(authService.login(request));
+	    } catch (BadCredentialsException e) {
+	        AuthResponseDto response = new AuthResponseDto(null, e.getMessage());
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+	    }
 	}
 
 	@PostMapping("/register")
