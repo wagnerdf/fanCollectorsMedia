@@ -71,6 +71,6 @@ public class AuthService {
 
 		usuarioRepository.save(usuario);
 		String token = jwtService.generateToken(usuario);
-		return new AuthResponseDto(token);
+		return new AuthResponseDto(token, "Usuário registrado com sucesso");
 	}
 }

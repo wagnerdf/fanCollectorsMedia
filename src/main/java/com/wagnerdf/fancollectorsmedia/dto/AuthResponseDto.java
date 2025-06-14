@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor // necessário para serialização
 public class AuthResponseDto {
     private String token;
-    private String message; // novo campo para mensagens
+    private String message; 
 }
 
 
