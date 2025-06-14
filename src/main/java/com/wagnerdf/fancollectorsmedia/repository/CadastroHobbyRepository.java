@@ -10,5 +10,7 @@ import com.wagnerdf.fancollectorsmedia.model.CadastroHobby;
 public interface CadastroHobbyRepository extends JpaRepository<CadastroHobby, Long>{
 	
 	List<CadastroHobby> findByCadastro(Cadastro cadastro);
+	
+	List<CadastroHobby> findByCadastroId(Long cadastroId);
 
 }
