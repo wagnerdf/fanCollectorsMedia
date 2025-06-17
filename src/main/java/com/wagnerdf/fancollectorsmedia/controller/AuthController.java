@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.wagnerdf.fancollectorsmedia.dto.AuthRequestDto;
 import com.wagnerdf.fancollectorsmedia.dto.AuthResponseDto;
+import com.wagnerdf.fancollectorsmedia.dto.CadastroRequestDto;
 import com.wagnerdf.fancollectorsmedia.dto.RefreshTokenRequest;
 import com.wagnerdf.fancollectorsmedia.dto.RegisterRequestDto;
 import com.wagnerdf.fancollectorsmedia.security.CustomUserDetailsService;
@@ -74,4 +75,10 @@ public class AuthController {
 
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "Token inválido."));
 	}
+	
+	@PostMapping("/registerFull")
+	public ResponseEntity<AuthResponseDto> registerFull(@Valid @RequestBody CadastroRequestDto request) {
+	    return ResponseEntity.ok(authService.registerFull(request));
+	}
+
 }

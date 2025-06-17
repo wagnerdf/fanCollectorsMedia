@@ -25,11 +25,17 @@ import jakarta.persistence.Transient;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
+@Builder
+@AllArgsConstructor
+@ToString
 @Getter
 @Setter
 @NoArgsConstructor
@@ -71,7 +77,6 @@ public class Cadastro implements Serializable {
 	private String avatarUrl;
 	
 	@Transient // ← Essa anotação JPA impede que a propriedade seja persistida no banco
-	@NotBlank(message = "A senha é obrigatória.")
 	private String senha;
 
 	@Enumerated(EnumType.STRING)

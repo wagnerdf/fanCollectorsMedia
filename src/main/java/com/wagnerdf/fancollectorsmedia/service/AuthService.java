@@ -1,5 +1,7 @@
 package com.wagnerdf.fancollectorsmedia.service;
 
+import java.time.LocalDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -9,19 +11,29 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.wagnerdf.fancollectorsmedia.dto.AuthRequestDto;
 import com.wagnerdf.fancollectorsmedia.dto.AuthResponseDto;
+import com.wagnerdf.fancollectorsmedia.dto.CadastroRequestDto;
+import com.wagnerdf.fancollectorsmedia.dto.EnderecoDto;
 import com.wagnerdf.fancollectorsmedia.dto.RegisterRequestDto;
 import com.wagnerdf.fancollectorsmedia.exception.EmailDuplicadoException;
+import com.wagnerdf.fancollectorsmedia.model.Cadastro;
+import com.wagnerdf.fancollectorsmedia.model.Endereco;
 import com.wagnerdf.fancollectorsmedia.model.Papel;
 import com.wagnerdf.fancollectorsmedia.model.Usuario;
+import com.wagnerdf.fancollectorsmedia.model.enums.StatusUsuario;
+import com.wagnerdf.fancollectorsmedia.repository.CadastroRepository;
 import com.wagnerdf.fancollectorsmedia.repository.PapelRepository;
 import com.wagnerdf.fancollectorsmedia.repository.UsuarioRepository;
 import com.wagnerdf.fancollectorsmedia.security.JwtService;
 
 @Service
 public class AuthService {
+	
+	@Autowired
+	private CadastroRepository cadastroRepository;
 
 	@Autowired
 	private UsuarioRepository usuarioRepository;
@@ -73,4 +85,59 @@ public class AuthService {
 		String token = jwtService.generateToken(usuario);
 		return new AuthResponseDto(token, "Usuário registrado com sucesso");
 	}
+	
+	@Transactional
+	public AuthResponseDto registerFull(CadastroRequestDto request) {
+	    if (usuarioRepository.findByLogin(request.getEmail()).isPresent()) {
+	        throw new EmailDuplicadoException("E-mail já está em uso");
+	    }
+
+	    Papel papel = papelRepository.findByNome("ROLE_USER")
+	            .orElseThrow(() -> new RuntimeException("Papel ROLE_USER não encontrado"));
+
+	    // Criar cadastro (dados pessoais + endereço)
+	    Cadastro cadastro = Cadastro.builder()
+	        .nome(request.getNome())
+	        .sobreNome(request.getSobreNome())
+	        .dataNascimento(request.getDataNascimento())
+	        .sexo(request.getSexo())
+	        .telefone(request.getTelefone())
+	        .email(request.getEmail())
+	        .dataCadastro(LocalDateTime.now())
+	        .status(StatusUsuario.ATIVO)
+	        .endereco(EnderecoMapper.toEntity(request.getEndereco()))
+	        .build();
+
+	    cadastroRepository.save(cadastro);
+
+	    // Criar usuário para login
+	    Usuario usuario = Usuario.builder()
+	        .login(request.getEmail())
+	        .senha(passwordEncoder.encode(request.getSenha()))
+	        .papel(papel)
+	        .cadastro(cadastro) // associa o usuário ao cadastro
+	        .build();
+
+	    usuarioRepository.save(usuario);
+
+	    // Gerar token JWT com o usuário criado
+	    String token = jwtService.generateToken(usuario);
+
+	    return new AuthResponseDto(token, "Cadastro completo e usuário criado com sucesso");
+	}
+	
+	public class EnderecoMapper {
+	    public static Endereco toEntity(EnderecoDto dto) {
+	        return Endereco.builder()
+	            .cep(dto.getCep())
+	            .rua(dto.getRua())
+	            .numero(dto.getNumero())
+	            .complemento(dto.getComplemento())
+	            .bairro(dto.getBairro())
+	            .cidade(dto.getCidade())
+	            .estado(dto.getEstado())
+	            .build();
+	    }
+	}
+
 }
