@@ -105,6 +105,7 @@ public class AuthService {
 	        .email(request.getEmail())
 	        .dataCadastro(LocalDateTime.now())
 	        .status(StatusUsuario.ATIVO)
+	        .avatarUrl(request.getAvatarUrl())
 	        .endereco(EnderecoMapper.toEntity(request.getEndereco()))
 	        .build();
 
