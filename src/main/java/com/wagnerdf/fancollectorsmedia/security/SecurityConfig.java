@@ -17,6 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
@@ -51,7 +52,8 @@ public class SecurityConfig {
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http.cors(Customizer.withDefaults()).csrf(csrf -> csrf.disable())
+		http.cors(Customizer.withDefaults()) // <- Ativando CORS com config externa
+				.csrf(csrf -> csrf.disable())
 				.sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**", "/fanCollectorsMedia/auth/**")
 						.permitAll().anyRequest().authenticated())
@@ -66,15 +68,15 @@ public class SecurityConfig {
 	}
 
 	@Bean
-	public CorsFilter corsFilter() {
-		CorsConfiguration config = new CorsConfiguration();
-		config.setAllowCredentials(true);
-		config.setAllowedOrigins(List.of("http://localhost:3000"));
-		config.setAllowedHeaders(List.of("*"));
-		config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+	public CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration configuration = new CorsConfiguration();
+		configuration.setAllowedOriginPatterns(List.of("http://localhost:3001")); // Porta do seu React
+		configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+		configuration.setAllowedHeaders(List.of("*"));
+		configuration.setAllowCredentials(true);
 
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		source.registerCorsConfiguration("/**", config);
-		return new CorsFilter(source);
+		source.registerCorsConfiguration("/**", configuration);
+		return source;
 	}
 }
