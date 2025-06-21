@@ -89,7 +89,7 @@ public class AuthService {
 	@Transactional
 	public AuthResponseDto registerFull(CadastroRequestDto request) {
 	    if (usuarioRepository.findByLogin(request.getEmail()).isPresent()) {
-	        throw new EmailDuplicadoException("E-mail já está em uso");
+	        throw new EmailDuplicadoException("Esse e-mail já está em uso");
 	    }
 
 	    Papel papel = papelRepository.findByNome("ROLE_USER")
