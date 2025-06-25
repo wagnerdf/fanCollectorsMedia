@@ -1,5 +1,7 @@
 package com.wagnerdf.fancollectorsmedia.dto;
 
+import com.wagnerdf.fancollectorsmedia.model.Endereco;
+
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,4 +29,15 @@ public class EnderecoDto {
 
     @NotBlank(message = "O CEP é obrigatório.")
     private String cep;
+    
+    public EnderecoDto(Endereco endereco) {
+        this.rua = endereco.getRua();
+        this.numero = endereco.getNumero();
+        this.complemento = endereco.getComplemento();
+        this.bairro = endereco.getBairro();
+        this.cidade = endereco.getCidade();
+        this.estado = endereco.getEstado();
+        this.cep = endereco.getCep();
+    }
+
 }

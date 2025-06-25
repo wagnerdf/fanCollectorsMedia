@@ -56,7 +56,7 @@ public class CadastroDto {
 		this.sobreNome = cadastro.getSobreNome();
 		this.dataNascimento = cadastro.getDataNascimento();
 		this.sexo = cadastro.getSexo();
-		//this.endereco = cadastro.getEndereco();
+		this.endereco = cadastro.getEndereco() != null ? new EnderecoDto(cadastro.getEndereco()) : null;
 		this.telefone = cadastro.getTelefone();
 		this.avatarUrl = cadastro.getAvatarUrl();
 		//this.status = status;
