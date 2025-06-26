@@ -11,10 +11,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.wagnerdf.fancollectorsmedia.dto.AtualizarCadastroDto;
 import com.wagnerdf.fancollectorsmedia.dto.CadastroDto;
 import com.wagnerdf.fancollectorsmedia.dto.CadastroHobbyDto;
 import com.wagnerdf.fancollectorsmedia.dto.CadastroRequestDto;
@@ -102,5 +104,14 @@ public class CadastroController {
 		Cadastro usuario = cadastroService.buscarPorEmail(userDetails.getUsername());
 		return ResponseEntity.ok(new CadastroDto(usuario));
 	}
+	
+	@PutMapping("/perfilEditar")
+    public ResponseEntity<?> atualizarCadastro(
+        @RequestBody AtualizarCadastroDto dto,
+        @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        cadastroService.atualizarCadastro(dto, userDetails.getUsername());
+        return ResponseEntity.ok().build();
+    }
 
 }

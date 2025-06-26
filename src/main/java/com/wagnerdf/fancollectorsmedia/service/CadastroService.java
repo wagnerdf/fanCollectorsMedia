@@ -1,12 +1,15 @@
 package com.wagnerdf.fancollectorsmedia.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.wagnerdf.fancollectorsmedia.dto.AtualizarCadastroDto;
 import com.wagnerdf.fancollectorsmedia.exception.EmailDuplicadoException;
 import com.wagnerdf.fancollectorsmedia.model.Cadastro;
 import com.wagnerdf.fancollectorsmedia.model.Endereco;
@@ -14,6 +17,7 @@ import com.wagnerdf.fancollectorsmedia.model.Papel;
 import com.wagnerdf.fancollectorsmedia.model.Usuario;
 import com.wagnerdf.fancollectorsmedia.repository.CadastroHobbyRepository;
 import com.wagnerdf.fancollectorsmedia.repository.CadastroRepository;
+import com.wagnerdf.fancollectorsmedia.repository.EnderecoRepository;
 import com.wagnerdf.fancollectorsmedia.repository.PapelRepository;
 import com.wagnerdf.fancollectorsmedia.repository.UsuarioRepository;
 
@@ -34,6 +38,9 @@ public class CadastroService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    
+    @Autowired
+    private EnderecoRepository enderecoRepository;
 
 
     public Cadastro salvarCadastroCompleto(Cadastro cadastro) {
@@ -86,6 +93,38 @@ public class CadastroService {
     public Cadastro buscarPorEmail(String email) {
         return cadastroRepository.findByEmail(email)
             .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
+    }
+    
+    @Transactional
+    public void atualizarCadastro(AtualizarCadastroDto dto, String emailUsuario) {
+        Usuario usuario = usuarioRepository.findByLogin(emailUsuario)
+            .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
+
+        Cadastro cadastro = usuario.getCadastro();
+
+        // Atualiza apenas os campos permitidos
+        cadastro.setDataNascimento(LocalDate.parse(dto.getDataNascimento()));
+        cadastro.setSexo(dto.getSexo());
+        cadastro.setTelefone(dto.getTelefone());
+
+        // Atualiza o endereço
+        Endereco endereco = cadastro.getEndereco();
+        endereco.setCep(dto.getCep());
+        endereco.setRua(dto.getRua());
+        endereco.setNumero(dto.getNumero());
+        endereco.setComplemento(dto.getComplemento());
+        endereco.setBairro(dto.getBairro());
+        endereco.setCidade(dto.getCidade());
+        endereco.setEstado(dto.getEstado());
+
+        enderecoRepository.save(endereco);
+        cadastroRepository.save(cadastro);
+
+        // Atualiza a senha, se informada
+        if (dto.getNovaSenha() != null && !dto.getNovaSenha().isBlank()) {
+            usuario.setSenha(passwordEncoder.encode(dto.getNovaSenha()));
+            usuarioRepository.save(usuario);
+        }
     }
 
 }
