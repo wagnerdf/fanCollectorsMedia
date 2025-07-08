@@ -18,6 +18,7 @@ import com.wagnerdf.fancollectorsmedia.dto.AuthResponseDto;
 import com.wagnerdf.fancollectorsmedia.dto.CadastroRequestDto;
 import com.wagnerdf.fancollectorsmedia.dto.RefreshTokenRequest;
 import com.wagnerdf.fancollectorsmedia.dto.RegisterRequestDto;
+import com.wagnerdf.fancollectorsmedia.dto.ResetarSenhaRequest;
 import com.wagnerdf.fancollectorsmedia.security.CustomUserDetailsService;
 import com.wagnerdf.fancollectorsmedia.security.JwtService;
 import com.wagnerdf.fancollectorsmedia.service.AuthService;
@@ -92,5 +93,16 @@ public class AuthController {
 
         return ResponseEntity.ok("Se este email existir, enviaremos instruções para recuperação.");
     }
+    
+    @PostMapping("/resetar-senha")
+    public ResponseEntity<String> resetarSenha(@RequestBody ResetarSenhaRequest request) {
+        try {
+            recuperacaoSenhaService.redefinirSenha(request.getToken(), request.getNovaSenha());
+            return ResponseEntity.ok("Senha redefinida com sucesso.");
+        } catch (RuntimeException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+    }
+
 
 }
