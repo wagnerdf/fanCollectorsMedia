@@ -21,6 +21,7 @@ import com.wagnerdf.fancollectorsmedia.dto.RegisterRequestDto;
 import com.wagnerdf.fancollectorsmedia.security.CustomUserDetailsService;
 import com.wagnerdf.fancollectorsmedia.security.JwtService;
 import com.wagnerdf.fancollectorsmedia.service.AuthService;
+import com.wagnerdf.fancollectorsmedia.service.RecuperacaoSenhaService;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.validation.Valid;
@@ -37,6 +38,9 @@ public class AuthController {
 	
 	@Autowired
     private CustomUserDetailsService userDetailsService;
+	
+	@Autowired
+    private RecuperacaoSenhaService recuperacaoSenhaService;
 
 	@PostMapping("/login")
 	public ResponseEntity<AuthResponseDto> login(@Valid @RequestBody AuthRequestDto request) {
@@ -80,5 +84,13 @@ public class AuthController {
 	public ResponseEntity<AuthResponseDto> registerFull(@Valid @RequestBody CadastroRequestDto request) {
 	    return ResponseEntity.ok(authService.registerFull(request));
 	}
+	
+    @PostMapping("/recuperar-senha")
+    public ResponseEntity<String> recuperarSenha(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        recuperacaoSenhaService.solicitarRecuperacaoSenha(email);
+
+        return ResponseEntity.ok("Se este email existir, enviaremos instruções para recuperação.");
+    }
 
 }
