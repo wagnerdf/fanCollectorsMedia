@@ -1,7 +1,9 @@
 package com.wagnerdf.fancollectorsmedia.controller;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,9 +21,12 @@ import com.wagnerdf.fancollectorsmedia.dto.CadastroRequestDto;
 import com.wagnerdf.fancollectorsmedia.dto.RefreshTokenRequest;
 import com.wagnerdf.fancollectorsmedia.dto.RegisterRequestDto;
 import com.wagnerdf.fancollectorsmedia.dto.ResetarSenhaRequest;
+import com.wagnerdf.fancollectorsmedia.model.PasswordResetToken;
+import com.wagnerdf.fancollectorsmedia.repository.PasswordResetTokenRepository;
 import com.wagnerdf.fancollectorsmedia.security.CustomUserDetailsService;
 import com.wagnerdf.fancollectorsmedia.security.JwtService;
 import com.wagnerdf.fancollectorsmedia.service.AuthService;
+import com.wagnerdf.fancollectorsmedia.service.EmailService;
 import com.wagnerdf.fancollectorsmedia.service.RecuperacaoSenhaService;
 
 import io.jsonwebtoken.ExpiredJwtException;
@@ -42,6 +47,12 @@ public class AuthController {
 	
 	@Autowired
     private RecuperacaoSenhaService recuperacaoSenhaService;
+	
+	@Autowired
+    private EmailService emailService;
+	
+	@Autowired
+	private PasswordResetTokenRepository passwordResetTokenRepository;
 
 	@PostMapping("/login")
 	public ResponseEntity<AuthResponseDto> login(@Valid @RequestBody AuthRequestDto request) {
@@ -86,13 +97,24 @@ public class AuthController {
 	    return ResponseEntity.ok(authService.registerFull(request));
 	}
 	
-    @PostMapping("/recuperar-senha")
-    public ResponseEntity<String> recuperarSenha(@RequestBody Map<String, String> request) {
-        String email = request.get("email");
-        recuperacaoSenhaService.solicitarRecuperacaoSenha(email);
+	@PostMapping("/recuperar-senha")
+	public String recuperarSenha(@RequestBody Map<String, String> body) {
+	    String email = body.get("email");
+	    String token = UUID.randomUUID().toString();
+	    LocalDateTime expiracao = LocalDateTime.now().plusMinutes(30);
 
-        return ResponseEntity.ok("Se este email existir, enviaremos instruções para recuperação.");
-    }
+	    // Remove tokens antigos desse email
+	    passwordResetTokenRepository.deleteByEmail(email);
+
+	    // Salva novo token
+	    PasswordResetToken resetToken = new PasswordResetToken(email, token, expiracao);
+	    passwordResetTokenRepository.save(resetToken);
+
+	    // Envia e-mail com link
+	    emailService.enviarEmailRecuperacao(email, token);
+
+	    return "E-mail de recuperação enviado com sucesso!";
+	}
     
     @PostMapping("/resetar-senha")
     public ResponseEntity<String> resetarSenha(@RequestBody ResetarSenhaRequest request) {

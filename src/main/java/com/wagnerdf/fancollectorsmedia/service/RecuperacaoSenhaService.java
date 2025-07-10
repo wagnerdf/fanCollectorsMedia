@@ -48,7 +48,7 @@ public class RecuperacaoSenhaService {
             tokenRepository.save(tokenEntity);
 
             String link = "http://localhost:5173/resetar-senha?token=" + token;
-            emailService.enviarEmail(email, "Recuperação de senha", "Clique no link para redefinir sua senha:\n\n" + link);
+            emailService.enviarEmailRecuperacao(email, token);
         }
 
         // Independente de existir ou não, não entrega informação
@@ -74,9 +74,10 @@ public class RecuperacaoSenhaService {
             .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
         String novaSenhaHash = passwordEncoder.encode(novaSenha);
+        System.out.println("Antes de salvar nova senha: " + usuario.getSenha());
         usuario.setSenha(novaSenhaHash);
         usuarioRepository.save(usuario);
-
+        System.out.println("Depois de salvar nova senha: " + novaSenhaHash);
         tokenRepository.delete(resetToken);
     }
 
