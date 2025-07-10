@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.wagnerdf.fancollectorsmedia.dto.AuthRequestDto;
 import com.wagnerdf.fancollectorsmedia.dto.AuthResponseDto;
 import com.wagnerdf.fancollectorsmedia.dto.CadastroRequestDto;
-import com.wagnerdf.fancollectorsmedia.dto.RefreshTokenRequest;
+import com.wagnerdf.fancollectorsmedia.dto.RefreshTokenRequestDto;
 import com.wagnerdf.fancollectorsmedia.dto.RegisterRequestDto;
 import com.wagnerdf.fancollectorsmedia.dto.ResetarSenhaRequest;
 import com.wagnerdf.fancollectorsmedia.model.PasswordResetToken;
@@ -70,28 +70,34 @@ public class AuthController {
 	}
 
 	@PostMapping("/refresh-token")
-	public ResponseEntity<Map<String, String>> refreshToken(@RequestBody RefreshTokenRequest request) {
-		String token = request.getToken();
+	public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequestDto request) {
+	    String refreshToken = request.getRefreshToken();
 
-		try {
-			String username = jwtService.extractUsername(token);
+	    try {
+	        // Valida o refresh token
+	        if (!jwtService.isRefreshTokenValid(refreshToken)) {
+	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+	                    .body(Map.of("error", "Refresh token inválido ou expirado."));
+	        }
 
-			if (username != null && jwtService.isTokenValido(token)) {
-				UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-				String novoToken = jwtService.generateToken(userDetails);
+	        String username = jwtService.extractUsername(refreshToken);
+	        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+	        String novoAccessToken = jwtService.generateToken(userDetails);
 
-				Map<String, String> response = new HashMap<>();
-				response.put("token", novoToken);
-				return ResponseEntity.ok(response);
-			}
-		} catch (ExpiredJwtException e) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-					.body(Map.of("error", "Token expirado. Faça login novamente."));
-		}
+	        Map<String, String> response = new HashMap<>();
+	        response.put("accessToken", novoAccessToken);
 
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "Token inválido."));
+	        return ResponseEntity.ok(response);
+
+	    } catch (ExpiredJwtException e) {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+	                .body(Map.of("error", "Refresh token expirado. Faça login novamente."));
+	    } catch (Exception e) {
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+	                .body(Map.of("error", "Erro ao processar o refresh token."));
+	    }
 	}
-	
+
 	@PostMapping("/registerFull")
 	public ResponseEntity<AuthResponseDto> registerFull(@Valid @RequestBody CadastroRequestDto request) {
 	    return ResponseEntity.ok(authService.registerFull(request));
