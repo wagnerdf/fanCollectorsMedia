@@ -74,10 +74,8 @@ public class RecuperacaoSenhaService {
             .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
         String novaSenhaHash = passwordEncoder.encode(novaSenha);
-        System.out.println("Antes de salvar nova senha: " + usuario.getSenha());
         usuario.setSenha(novaSenhaHash);
         usuarioRepository.save(usuario);
-        System.out.println("Depois de salvar nova senha: " + novaSenhaHash);
         tokenRepository.delete(resetToken);
     }
 
