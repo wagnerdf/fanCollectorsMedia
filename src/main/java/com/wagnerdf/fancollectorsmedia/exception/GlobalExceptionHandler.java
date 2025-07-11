@@ -66,4 +66,9 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
+    
+    @ExceptionHandler(TokenJaSolicitadoException.class)
+    public ResponseEntity<String> handleTokenJaSolicitado(TokenJaSolicitadoException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    }
 }

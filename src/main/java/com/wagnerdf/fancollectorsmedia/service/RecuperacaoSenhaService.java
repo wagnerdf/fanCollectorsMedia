@@ -9,6 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.wagnerdf.fancollectorsmedia.exception.TokenJaSolicitadoException;
 import com.wagnerdf.fancollectorsmedia.model.Cadastro;
 import com.wagnerdf.fancollectorsmedia.model.PasswordResetToken;
 import com.wagnerdf.fancollectorsmedia.model.Usuario;
@@ -27,10 +28,10 @@ public class RecuperacaoSenhaService {
 
     @Autowired
     private EmailService emailService;
-    
+
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
-    
+
     @Autowired
     private UsuarioRepository usuarioRepository;
 
@@ -38,22 +39,33 @@ public class RecuperacaoSenhaService {
         Optional<Cadastro> cadastroOpt = cadastroRepository.findByEmail(email);
 
         if (cadastroOpt.isPresent()) {
-            // Remove tokens anteriores
-            tokenRepository.deleteByEmail(email);
+            Optional<PasswordResetToken> tokenExistenteOpt = tokenRepository.findByEmail(email);
 
+            if (tokenExistenteOpt.isPresent()) {
+                PasswordResetToken tokenExistente = tokenExistenteOpt.get();
+
+                if (tokenExistente.getExpirationDate().isAfter(LocalDateTime.now())) {
+                    throw new TokenJaSolicitadoException("Já existe uma solicitação ativa de redefinição de senha.");
+                } else {
+                    // Token expirado, remove antes de criar novo
+                    tokenRepository.delete(tokenExistente);
+                }
+            }
+
+            // Gera novo token
             String token = UUID.randomUUID().toString();
-            LocalDateTime expiracao = LocalDateTime.now().plusDays(1);// Periodos para expirar o TOKEN: plusMinutes, plusHours e plusDays
+            LocalDateTime expiracao = LocalDateTime.now().plusDays(1);
 
             PasswordResetToken tokenEntity = new PasswordResetToken(email, token, expiracao);
             tokenRepository.save(tokenEntity);
 
-            String link = "http://localhost:5173/resetar-senha?token=" + token;
+            //String link = "http://localhost:5173/resetar-senha?token=" + token;
             emailService.enviarEmailRecuperacao(email, token);
         }
 
-        // Independente de existir ou não, não entrega informação
+        // Não revela se o e-mail existe ou não por segurança
     }
-    
+
     @Transactional
     public void redefinirSenha(String token, String novaSenha) {
         if (novaSenha == null || novaSenha.trim().isEmpty()) {
@@ -78,7 +90,4 @@ public class RecuperacaoSenhaService {
         usuarioRepository.save(usuario);
         tokenRepository.delete(resetToken);
     }
-
-
 }
-
