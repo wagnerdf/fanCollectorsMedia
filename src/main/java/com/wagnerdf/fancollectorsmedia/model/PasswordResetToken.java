@@ -20,7 +20,7 @@ public class PasswordResetToken {
 
     private String token;
 
-    private LocalDateTime expirationDate;
+    private LocalDateTime expiracao;
 
     public PasswordResetToken() {
     	
@@ -29,7 +29,7 @@ public class PasswordResetToken {
     public PasswordResetToken(String email, String token, LocalDateTime expirationDate) {
         this.email = email;
         this.token = token;
-        this.expirationDate = expirationDate;
+        this.expiracao = expirationDate;
     }
 
 }

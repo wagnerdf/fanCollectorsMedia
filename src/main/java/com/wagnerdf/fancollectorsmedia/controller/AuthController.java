@@ -3,6 +3,7 @@ package com.wagnerdf.fancollectorsmedia.controller;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +11,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.wagnerdf.fancollectorsmedia.dto.AuthRequestDto;
 import com.wagnerdf.fancollectorsmedia.dto.AuthResponseDto;
@@ -22,6 +25,7 @@ import com.wagnerdf.fancollectorsmedia.dto.RefreshTokenRequestDto;
 import com.wagnerdf.fancollectorsmedia.dto.RegisterRequestDto;
 import com.wagnerdf.fancollectorsmedia.dto.ResetarSenhaRequest;
 import com.wagnerdf.fancollectorsmedia.model.PasswordResetToken;
+import com.wagnerdf.fancollectorsmedia.repository.CadastroRepository;
 import com.wagnerdf.fancollectorsmedia.repository.PasswordResetTokenRepository;
 import com.wagnerdf.fancollectorsmedia.security.CustomUserDetailsService;
 import com.wagnerdf.fancollectorsmedia.security.JwtService;
@@ -50,6 +54,9 @@ public class AuthController {
 	
 	@Autowired
     private EmailService emailService;
+	
+	@Autowired
+	private CadastroRepository cadastroRepository;
 	
 	@Autowired
 	private PasswordResetTokenRepository passwordResetTokenRepository;
@@ -103,24 +110,37 @@ public class AuthController {
 	    return ResponseEntity.ok(authService.registerFull(request));
 	}
 	
+	@Transactional
 	@PostMapping("/recuperar-senha")
 	public String recuperarSenha(@RequestBody Map<String, String> body) {
 	    String email = body.get("email");
+
+	    if (!cadastroRepository.existsByEmail(email)) {
+	        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "E-mail não encontrado.");
+	    }
+
+	    // Verifica se já existe um token válido
+	    Optional<PasswordResetToken> tokenExistente = passwordResetTokenRepository
+	            .findByEmailAndExpiracaoAfter(email, LocalDateTime.now());
+
+	    if (tokenExistente.isPresent()) {
+	        return "Já existe um pedido de redefinição de senha em andamento. Verifique seu e-mail.";
+	    }
+
 	    String token = UUID.randomUUID().toString();
 	    LocalDateTime expiracao = LocalDateTime.now().plusMinutes(30);
 
-	    // Remove tokens antigos desse email
 	    passwordResetTokenRepository.deleteByEmail(email);
 
-	    // Salva novo token
 	    PasswordResetToken resetToken = new PasswordResetToken(email, token, expiracao);
 	    passwordResetTokenRepository.save(resetToken);
 
-	    // Envia e-mail com link
 	    emailService.enviarEmailRecuperacao(email, token);
 
 	    return "E-mail de recuperação enviado com sucesso!";
 	}
+
+
     
     @PostMapping("/resetar-senha")
     public ResponseEntity<String> resetarSenha(@RequestBody ResetarSenhaRequest request) {

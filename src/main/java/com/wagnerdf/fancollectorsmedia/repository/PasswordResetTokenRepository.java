@@ -1,5 +1,6 @@
 package com.wagnerdf.fancollectorsmedia.repository;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,4 +13,6 @@ public interface PasswordResetTokenRepository extends JpaRepository<PasswordRese
     Optional<PasswordResetToken> findByToken(String token);
     Optional<PasswordResetToken> findByEmail(String email);
     void deleteByEmail(String email);
+    
+    Optional<PasswordResetToken> findByEmailAndExpiracaoAfter(String email, LocalDateTime agora);
 }
