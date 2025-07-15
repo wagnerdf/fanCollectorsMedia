@@ -44,7 +44,7 @@ public class RecuperacaoSenhaService {
             if (tokenExistenteOpt.isPresent()) {
                 PasswordResetToken tokenExistente = tokenExistenteOpt.get();
 
-                if (tokenExistente.getExpirationDate().isAfter(LocalDateTime.now())) {
+                if (tokenExistente.getExpiracao().isAfter(LocalDateTime.now())) {
                     throw new TokenJaSolicitadoException("Já existe uma solicitação ativa de redefinição de senha.");
                 } else {
                     // Token expirado, remove antes de criar novo
@@ -75,8 +75,8 @@ public class RecuperacaoSenhaService {
         PasswordResetToken resetToken = tokenRepository.findByToken(token)
             .orElseThrow(() -> new RuntimeException("Token inválido"));
 
-        if (resetToken.getExpirationDate().isBefore(LocalDateTime.now())) {
-            throw new RuntimeException("Token expirado");
+        if (resetToken.getExpiracao().isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("Este link de recuperação já expirou.");
         }
 
         Cadastro cadastro = cadastroRepository.findByEmail(resetToken.getEmail())
