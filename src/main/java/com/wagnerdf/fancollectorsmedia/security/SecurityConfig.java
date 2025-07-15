@@ -56,7 +56,7 @@ public class SecurityConfig {
 		http.cors(Customizer.withDefaults()) // <- Ativando CORS com config externa
 				.csrf(csrf -> csrf.disable())
 				.sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				.authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**", "/fanCollectorsMedia/auth/**")
+				.authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**", "/fanCollectorsMedia/auth/**", "/api/hobbies")
 						.permitAll().anyRequest().authenticated())
 				.exceptionHandling(e -> e.authenticationEntryPoint((req, res, ex) -> {
 					res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
