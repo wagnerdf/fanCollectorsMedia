@@ -21,8 +21,8 @@ public class JwtService {
 
     private static final String SECRET_KEY = "12345678901234567890123456789012"; // 32 chars (256 bits)
 
-    //private static final long ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 60 * 2; // 2 horas
-    private static final long ACCESS_TOKEN_EXPIRATION = 1000 * 60; // 1 minuto
+    private static final long ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 60 * 2; // 2 horas
+    //private static final long ACCESS_TOKEN_EXPIRATION = 1000 * 60; // 1 minuto
     private static final long REFRESH_TOKEN_EXPIRATION = 1000L * 60L * 60L * 24L * 7L; // 7 dias
 
     public String generateToken(Usuario usuario) {

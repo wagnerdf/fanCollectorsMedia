@@ -1,6 +1,7 @@
 package com.wagnerdf.fancollectorsmedia.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -12,5 +13,7 @@ public interface CadastroHobbyRepository extends JpaRepository<CadastroHobby, Lo
 	List<CadastroHobby> findByCadastro(Cadastro cadastro);
 	
 	List<CadastroHobby> findByCadastroId(Long cadastroId);
+	
+	Optional<CadastroHobby> findByCadastroIdAndHobbyId(Long cadastroId, Long hobbyId);
 
 }
