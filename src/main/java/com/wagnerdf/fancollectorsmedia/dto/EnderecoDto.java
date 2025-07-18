@@ -3,11 +3,13 @@ package com.wagnerdf.fancollectorsmedia.dto;
 import com.wagnerdf.fancollectorsmedia.model.Endereco;
 
 import jakarta.validation.constraints.NotBlank;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@Data
 public class EnderecoDto {
 
     @NotBlank(message = "A rua é obrigatória.")
@@ -39,5 +41,7 @@ public class EnderecoDto {
         this.estado = endereco.getEstado();
         this.cep = endereco.getCep();
     }
+    
+    private EnderecoDto endereco;
 
 }
