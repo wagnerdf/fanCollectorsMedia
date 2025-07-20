@@ -4,12 +4,10 @@ import com.wagnerdf.fancollectorsmedia.model.Endereco;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
-@Getter
-@Setter
 @Data
+@NoArgsConstructor // <-- ESSENCIAL para a desserialização funcionar
 public class EnderecoDto {
 
     @NotBlank(message = "A rua é obrigatória.")
@@ -31,7 +29,7 @@ public class EnderecoDto {
 
     @NotBlank(message = "O CEP é obrigatório.")
     private String cep;
-    
+
     public EnderecoDto(Endereco endereco) {
         this.rua = endereco.getRua();
         this.numero = endereco.getNumero();
@@ -41,7 +39,4 @@ public class EnderecoDto {
         this.estado = endereco.getEstado();
         this.cep = endereco.getCep();
     }
-    
-    private EnderecoDto endereco;
-
 }
