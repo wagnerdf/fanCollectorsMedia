@@ -27,5 +27,8 @@ public class MidiaTipo {
 	@NotBlank(message = "A descrição do tipo de mídia é obrigatório")
 	@Column(columnDefinition = "TEXT")
 	private String descricao;
+	
+	@Column(nullable = false)
+	private boolean ativo = true;
 
 }

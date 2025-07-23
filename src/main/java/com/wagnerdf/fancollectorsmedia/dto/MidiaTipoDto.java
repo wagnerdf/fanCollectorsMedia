@@ -14,4 +14,6 @@ public class MidiaTipoDto {
 	@NotBlank(message = "A descrição do tipo de mídia é obrigatório")
     private String descricao;
 	
+	private boolean ativo = true;
+	
 }
