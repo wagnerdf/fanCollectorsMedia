@@ -1,11 +1,12 @@
 package com.wagnerdf.fancollectorsmedia.service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.wagnerdf.fancollectorsmedia.dto.MidiaTipoDto;
 import com.wagnerdf.fancollectorsmedia.model.MidiaTipo;
 import com.wagnerdf.fancollectorsmedia.repository.MidiaTipoRepository;
 
@@ -34,6 +35,16 @@ public class MidiaTipoService {
 	
 	public void deletarPorId(Long id) {
 		midiaTipoRepository.deleteById(id);
+	}
+	
+	public MidiaTipoService(MidiaTipoRepository midiaTipoRepository) {
+        this.midiaTipoRepository = midiaTipoRepository;
+    }
+	
+	public List<MidiaTipoDto> buscarAtivos() {
+	    return midiaTipoRepository.findByAtivoTrue().stream()
+	        .map(m -> new MidiaTipoDto(m.getId(), m.getNome(), m.getDescricao()))
+	        .collect(Collectors.toList());
 	}
 
 }

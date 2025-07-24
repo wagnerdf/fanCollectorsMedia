@@ -83,5 +83,10 @@ public class MidiaTipoController {
 		MidiaTipo atualizado = midiaTipoService.salvar(existente);
 		return ResponseEntity.ok(atualizado);
 	}
+	
+	@GetMapping("/ativos")
+    public List<MidiaTipoDto> listarAtivos() {
+        return midiaTipoService.buscarAtivos();
+    }
 
 }
