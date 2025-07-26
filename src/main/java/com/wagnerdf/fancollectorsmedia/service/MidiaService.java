@@ -53,6 +53,11 @@ public class MidiaService {
 		midia.setAdquiridoEm(dto.getAdquiridoEm());
 		midia.setValorPago(dto.getValorPago());
 		midia.setCapaUrl(dto.getCapaUrl());
+	    midia.setSinopse(dto.getSinopse());
+	    midia.setGeneros(dto.getGeneros());
+	    midia.setDuracao(dto.getDuracao());
+	    midia.setLinguagem(dto.getLinguagem());
+	    midia.setNotaMedia(dto.getNotaMedia());
 		midia.setCadastro(cadastro);
 		midia.setMidiaTipo(midiaTipo);
 
@@ -110,6 +115,11 @@ public class MidiaService {
 		dto.setAdquiridoEm(midia.getAdquiridoEm());
 		dto.setValorPago(midia.getValorPago());
 		dto.setCapaUrl(midia.getCapaUrl());
+		dto.setSinopse(midia.getSinopse());
+		dto.setGeneros(midia.getGeneros());
+		dto.setDuracao(midia.getDuracao());
+		dto.setLinguagem(midia.getLinguagem());
+		dto.setNotaMedia(midia.getNotaMedia());
 		dto.setTipoMidia(midia.getMidiaTipo().getNome());
 
 		return dto;
@@ -147,6 +157,11 @@ public class MidiaService {
 	    midia.setAdquiridoEm(dto.getAdquiridoEm());
 	    midia.setValorPago(dto.getValorPago());
 	    midia.setCapaUrl(dto.getCapaUrl());
+	    midia.setSinopse(dto.getSinopse());
+	    midia.setGeneros(dto.getGeneros());
+	    midia.setDuracao(dto.getDuracao());
+	    midia.setLinguagem(dto.getLinguagem());
+	    midia.setNotaMedia(dto.getNotaMedia());
 	    midia.setMidiaTipo(midiaTipo);
 
 	    return midiaRepository.save(midia);

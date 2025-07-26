@@ -33,6 +33,11 @@ public class Midia {
     private String formatoVideo;
     private String observacoes;
     private Integer quantidadeItens;
+    private String sinopse;
+    private String generos;
+    private Integer duracao;
+    private String linguagem;
+    private Double notaMedia;
 
     @Enumerated(EnumType.STRING)
     private EstadoConservacao estadoConservacao;

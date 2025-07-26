@@ -37,6 +37,11 @@ public class MidiaResponseDto {
     private BigDecimal valorPago;
     private String capaUrl;
     private String tipoMidia;
+    private String sinopse;
+    private String generos;
+    private Integer duracao;
+    private String linguagem;
+    private Double notaMedia;
 
     // Getters e Setters
 }

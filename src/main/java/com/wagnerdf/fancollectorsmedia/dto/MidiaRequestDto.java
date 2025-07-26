@@ -32,4 +32,9 @@ public class MidiaRequestDto {
     private String capaUrl;
     private Long midiaTipoId;
     private Long cadastroId;
+    private String sinopse;
+    private String generos;
+    private Integer duracao;
+    private String linguagem;
+    private Double notaMedia;
 }
