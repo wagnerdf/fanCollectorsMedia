@@ -1,0 +1,2 @@
+ALTER TABLE midia
+DROP COLUMN nome;

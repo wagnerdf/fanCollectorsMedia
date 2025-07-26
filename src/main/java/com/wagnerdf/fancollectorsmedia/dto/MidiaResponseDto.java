@@ -15,7 +15,6 @@ import lombok.Setter;
 public class MidiaResponseDto {
 
     private Long id;
-    private String nome;
     private String tituloOriginal;
     private String tituloAlternativo;
     private String edicao;

@@ -9,7 +9,6 @@ import java.time.LocalDate;
 @Data
 public class MidiaRequestDto {
 
-    private String nome;
     private String tituloOriginal;
     private String tituloAlternativo;
     private String edicao;

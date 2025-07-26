@@ -32,7 +32,6 @@ public class MidiaService {
 
 		Midia midia = new Midia();
 
-		midia.setNome(dto.getNome());
 		midia.setTituloOriginal(dto.getTituloOriginal());
 		midia.setTituloAlternativo(dto.getTituloAlternativo());
 		midia.setEdicao(dto.getEdicao());
@@ -90,7 +89,6 @@ public class MidiaService {
 		MidiaResponseDto dto = new MidiaResponseDto();
 
 		dto.setId(midia.getId());
-		dto.setNome(midia.getNome());
 		dto.setTituloOriginal(midia.getTituloOriginal());
 		dto.setTituloAlternativo(midia.getTituloAlternativo());
 		dto.setEdicao(midia.getEdicao());
@@ -128,7 +126,6 @@ public class MidiaService {
 	    MidiaTipo midiaTipo = midiaTipoService.buscarPorId(dto.getMidiaTipoId());
 
 	    // Atualiza os campos
-	    midia.setNome(dto.getNome());
 	    midia.setTituloOriginal(dto.getTituloOriginal());
 	    midia.setTituloAlternativo(dto.getTituloAlternativo());
 	    midia.setEdicao(dto.getEdicao());
