@@ -18,7 +18,8 @@ public class MidiaRequestDto {
     private String regiao;
     private String faixas;
     private String classificacaoEtaria;
-    private String artistaDiretor;
+    private String artistas;
+    private String diretores;
     private String estudio;
     private Boolean midiaDigitalInclusa;
     private String formatoAudio;

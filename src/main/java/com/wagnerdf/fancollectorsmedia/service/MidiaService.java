@@ -41,7 +41,8 @@ public class MidiaService {
 		midia.setRegiao(dto.getRegiao());
 		midia.setFaixas(dto.getFaixas());
 		midia.setClassificacaoEtaria(dto.getClassificacaoEtaria());
-		midia.setArtistaDiretor(dto.getArtistaDiretor());
+		midia.setArtistas(dto.getArtistas());
+		midia.setDiretores(dto.getDiretores());
 		midia.setEstudio(dto.getEstudio());
 		midia.setMidiaDigitalInclusa(dto.getMidiaDigitalInclusa());
 		midia.setFormatoAudio(dto.getFormatoAudio());
@@ -98,7 +99,8 @@ public class MidiaService {
 		dto.setRegiao(midia.getRegiao());
 		dto.setFaixas(midia.getFaixas());
 		dto.setClassificacaoEtaria(midia.getClassificacaoEtaria());
-		dto.setArtistaDiretor(midia.getArtistaDiretor());
+		dto.setArtistas(midia.getArtistas());
+		dto.setDiretores(midia.getDiretores());
 		dto.setEstudio(midia.getEstudio());
 		dto.setMidiaDigitalInclusa(midia.getMidiaDigitalInclusa());
 		dto.setFormatoAudio(midia.getFormatoAudio());
@@ -135,7 +137,8 @@ public class MidiaService {
 	    midia.setRegiao(dto.getRegiao());
 	    midia.setFaixas(dto.getFaixas());
 	    midia.setClassificacaoEtaria(dto.getClassificacaoEtaria());
-	    midia.setArtistaDiretor(dto.getArtistaDiretor());
+	    midia.setArtistas(dto.getArtistas());
+	    midia.setDiretores(dto.getDiretores());
 	    midia.setEstudio(dto.getEstudio());
 	    midia.setMidiaDigitalInclusa(dto.getMidiaDigitalInclusa());
 	    midia.setFormatoAudio(dto.getFormatoAudio());
