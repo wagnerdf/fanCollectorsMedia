@@ -43,6 +43,7 @@ public class MidiaResponseDto {
     private String linguagem;
     private Double notaMedia;
     private String formatoMidia;
+    private String temporada;
 
     // Getters e Setters
 }

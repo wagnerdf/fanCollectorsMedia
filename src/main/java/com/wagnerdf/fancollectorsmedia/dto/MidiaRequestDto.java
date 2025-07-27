@@ -38,4 +38,5 @@ public class MidiaRequestDto {
     private String linguagem;
     private Double notaMedia;
     private String formatoMidia;
+    private String temporada;
 }

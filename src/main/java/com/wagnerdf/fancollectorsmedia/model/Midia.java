@@ -39,6 +39,7 @@ public class Midia {
     private String linguagem;
     private Double notaMedia;
     private String formatoMidia;
+    private String temporada;
 
     @Enumerated(EnumType.STRING)
     private EstadoConservacao estadoConservacao;
