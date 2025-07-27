@@ -38,6 +38,7 @@ public class Midia {
     private Integer duracao;
     private String linguagem;
     private Double notaMedia;
+    private String formatoMidia;
 
     @Enumerated(EnumType.STRING)
     private EstadoConservacao estadoConservacao;

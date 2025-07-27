@@ -37,4 +37,5 @@ public class MidiaRequestDto {
     private Integer duracao;
     private String linguagem;
     private Double notaMedia;
+    private String formatoMidia;
 }

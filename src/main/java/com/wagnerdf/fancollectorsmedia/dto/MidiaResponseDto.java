@@ -42,6 +42,7 @@ public class MidiaResponseDto {
     private Integer duracao;
     private String linguagem;
     private Double notaMedia;
+    private String formatoMidia;
 
     // Getters e Setters
 }
