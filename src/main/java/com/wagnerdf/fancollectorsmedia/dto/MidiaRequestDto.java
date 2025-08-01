@@ -14,7 +14,6 @@ public class MidiaRequestDto {
     private String edicao;
     private String colecao;
     private String numeroSerie;
-    private String regiao;
     private String faixas;
     private String classificacaoEtaria;
     private String artistas;

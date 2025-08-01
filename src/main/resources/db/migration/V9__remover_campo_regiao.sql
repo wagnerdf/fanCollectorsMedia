@@ -1,0 +1,1 @@
+ALTER TABLE midia DROP COLUMN regiao;

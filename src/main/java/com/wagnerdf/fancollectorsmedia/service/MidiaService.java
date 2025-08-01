@@ -37,7 +37,6 @@ public class MidiaService {
 		midia.setEdicao(dto.getEdicao());
 		midia.setColecao(dto.getColecao());
 		midia.setNumeroSerie(dto.getNumeroSerie());
-		midia.setRegiao(dto.getRegiao());
 		midia.setFaixas(dto.getFaixas());
 		midia.setClassificacaoEtaria(dto.getClassificacaoEtaria());
 		midia.setArtistas(dto.getArtistas());
@@ -97,7 +96,6 @@ public class MidiaService {
 		dto.setEdicao(midia.getEdicao());
 		dto.setColecao(midia.getColecao());
 		dto.setNumeroSerie(midia.getNumeroSerie());
-		dto.setRegiao(midia.getRegiao());
 		dto.setFaixas(midia.getFaixas());
 		dto.setClassificacaoEtaria(midia.getClassificacaoEtaria());
 		dto.setArtistas(midia.getArtistas());
@@ -137,7 +135,6 @@ public class MidiaService {
 	    midia.setEdicao(dto.getEdicao());
 	    midia.setColecao(dto.getColecao());
 	    midia.setNumeroSerie(dto.getNumeroSerie());
-	    midia.setRegiao(dto.getRegiao());
 	    midia.setFaixas(dto.getFaixas());
 	    midia.setClassificacaoEtaria(dto.getClassificacaoEtaria());
 	    midia.setArtistas(dto.getArtistas());
