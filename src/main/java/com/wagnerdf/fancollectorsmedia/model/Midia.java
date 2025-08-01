@@ -1,12 +1,17 @@
 package com.wagnerdf.fancollectorsmedia.model;
 
-import com.wagnerdf.fancollectorsmedia.model.enums.EstadoConservacao;
-import jakarta.persistence.*;
-import lombok.Data;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
+import lombok.Data;
 
 @Entity
 @Table(name = "midia")
@@ -28,7 +33,6 @@ public class Midia {
     private String artistas;
     private String diretores;
     private String estudio;
-    private Boolean midiaDigitalInclusa;
     private String formatoAudio;
     private String formatoVideo;
     private String observacoes;
@@ -40,13 +44,7 @@ public class Midia {
     private Double notaMedia;
     private String formatoMidia;
     private String temporada;
-
-    @Enumerated(EnumType.STRING)
-    private EstadoConservacao estadoConservacao;
-
     private Integer anoLancamento;
-    private LocalDate adquiridoEm;
-    private BigDecimal valorPago;
     private String capaUrl;
 
     @ManyToOne
@@ -57,12 +55,19 @@ public class Midia {
     @JoinColumn(name = "cadastro_id", nullable = false)
     private Cadastro cadastro;
 
-    private LocalDateTime criadoEm = LocalDateTime.now();
-    private LocalDateTime atualizadoEm = LocalDateTime.now();
+    private LocalDateTime criadoEm;
+    private LocalDateTime atualizadoEm;
+
+    @PrePersist
+    public void prePersist() {
+        this.criadoEm = LocalDateTime.now();
+        this.atualizadoEm = null; // Deixa null na criação
+    }
 
     @PreUpdate
     public void preUpdate() {
         this.atualizadoEm = LocalDateTime.now();
     }
+
 }
 
