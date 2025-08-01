@@ -2,6 +2,7 @@ package com.wagnerdf.fancollectorsmedia.model;
 
 import java.time.LocalDateTime;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -30,14 +31,24 @@ public class Midia {
     private String regiao;
     private String faixas;
     private String classificacaoEtaria;
+    
+    @Column(length = 500)
     private String artistas;
+    
+    @Column(length = 500)
     private String diretores;
     private String estudio;
     private String formatoAudio;
     private String formatoVideo;
+    
+    @Column(length = 1000)
     private String observacoes;
     private Integer quantidadeItens;
+    
+    @Column(length = 2000)
     private String sinopse;
+    
+    @Column(length = 500)
     private String generos;
     private Integer duracao;
     private String linguagem;
