@@ -2,8 +2,11 @@ package com.wagnerdf.fancollectorsmedia.controller;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,7 +24,8 @@ import com.wagnerdf.fancollectorsmedia.service.MidiaService;
 @RequestMapping("/api/midias")
 public class MidiaController {
 
-	private final MidiaService midiaService;
+	@Autowired
+    private MidiaService midiaService;
 
 	public MidiaController(MidiaService midiaService) {
 		this.midiaService = midiaService;
@@ -63,6 +67,16 @@ public class MidiaController {
 	    midiaService.editarMidia(id, dto, username);
 	    return ResponseEntity.ok("Mídia atualizada com sucesso");
 	}
+	
+	@GetMapping("/usuario")
+    public ResponseEntity<List<MidiaResponseDto>> listarMidiasDoUsuario(
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        String username = userDetails.getUsername();
+        List<MidiaResponseDto> midias = midiaService.listarMidiasDoUsuario(username);
+
+        return ResponseEntity.ok(midias);
+    }
 
 
 }
