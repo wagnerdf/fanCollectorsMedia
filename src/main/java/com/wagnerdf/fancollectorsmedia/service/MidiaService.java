@@ -74,7 +74,7 @@ public class MidiaService {
 
 	public List<MidiaResponseDto> listarMidiasDoUsuario(String username) {
 		Cadastro cadastro = cadastroService.buscarPorUsername(username);
-		return midiaRepository.findByCadastro(cadastro).stream().map(this::toDto).toList();
+		return midiaRepository.findByCadastroOrderByTituloAlternativoAsc(cadastro).stream().map(this::toDto).toList();
 	}
 
 	public MidiaResponseDto buscarMidiaPorId(Long id, String username) {

@@ -60,8 +60,7 @@ public class SecurityConfig {
                     "/auth/**",
                     "/fanCollectorsMedia/auth/**",
                     "/api/hobbies",
-                    "/cadastros/**",
-                    "/api/midias/usuario"
+                    "/cadastros/**"
                 ).permitAll()
                 .anyRequest().authenticated()
             )

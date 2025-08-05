@@ -10,6 +10,7 @@ import com.wagnerdf.fancollectorsmedia.model.Midia;
 
 @Repository
 public interface MidiaRepository extends JpaRepository<Midia, Long> {
-	List<Midia> findByCadastro(Cadastro cadastro);
+	//List<Midia> findByCadastro(Cadastro cadastro);
+	List<Midia> findByCadastroOrderByTituloAlternativoAsc(Cadastro cadastro);
 }
 
