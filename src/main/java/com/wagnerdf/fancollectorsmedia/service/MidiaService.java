@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.wagnerdf.fancollectorsmedia.dto.MidiaRequestDto;
 import com.wagnerdf.fancollectorsmedia.dto.MidiaResponseDto;
@@ -74,7 +76,7 @@ public class MidiaService {
 
 	public List<MidiaResponseDto> listarMidiasDoUsuario(String username) {
 		Cadastro cadastro = cadastroService.buscarPorUsername(username);
-		return midiaRepository.findByCadastroOrderByTituloAlternativoAsc(cadastro).stream().map(this::toDto).toList();
+		return midiaRepository.findByCadastro(cadastro).stream().map(this::toDto).toList();
 	}
 
 	public MidiaResponseDto buscarMidiaPorId(Long id, String username) {
@@ -157,6 +159,12 @@ public class MidiaService {
 
 	    return midiaRepository.save(midia);
 	}
-
+	
+	public Page<MidiaResponseDto> listarMidiasPaginadas(String username, Pageable pageable) {
+	    Cadastro cadastro = cadastroService.buscarPorUsername(username);
+	    return midiaRepository
+	        .findByCadastroIdOrderByTituloAlternativoAsc(cadastro.getId(), pageable)
+	        .map(this::toDto);
+	}
 
 }
