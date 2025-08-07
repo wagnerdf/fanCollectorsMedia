@@ -14,6 +14,8 @@ import com.wagnerdf.fancollectorsmedia.model.Midia;
 public interface MidiaRepository extends JpaRepository<Midia, Long> {
 	List<Midia> findByCadastro(Cadastro cadastro);
 	Page<Midia> findByCadastroIdOrderByTituloAlternativoAsc(Long cadastroId, Pageable pageable);
+	Page<Midia> findByCadastroEmail(String email, Pageable pageable);
+
 
 }
 

@@ -3,9 +3,9 @@ package com.wagnerdf.fancollectorsmedia.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import com.wagnerdf.fancollectorsmedia.dto.MidiaRequestDto;
 import com.wagnerdf.fancollectorsmedia.dto.MidiaResponseDto;
@@ -166,5 +166,12 @@ public class MidiaService {
 	        .findByCadastroIdOrderByTituloAlternativoAsc(cadastro.getId(), pageable)
 	        .map(this::toDto);
 	}
+	
+	public Page<MidiaResponseDto> listarMidiasDoUsuarioPaginadas(String username, Pageable pageable) {
+	    return midiaRepository.findByCadastroEmail(username, pageable)
+	            .map(this::toDto);
+
+	}
+
 
 }
