@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.wagnerdf.fancollectorsmedia.dto.MidiaBuscaDto;
 import com.wagnerdf.fancollectorsmedia.dto.MidiaRequestDto;
 import com.wagnerdf.fancollectorsmedia.dto.MidiaResponseDto;
 import com.wagnerdf.fancollectorsmedia.model.Cadastro;
@@ -172,6 +173,10 @@ public class MidiaService {
 	            .map(this::toDto);
 
 	}
+	
+	public List<MidiaBuscaDto> buscarPorTitulo(String username, String query) {
+        return midiaRepository.buscarPorTitulo(username, query);
+    }
 
 
 }
