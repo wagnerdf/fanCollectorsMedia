@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.wagnerdf.fancollectorsmedia.dto.MidiaBuscaDto;
+import com.wagnerdf.fancollectorsmedia.dto.MidiaResponseDto;
 import com.wagnerdf.fancollectorsmedia.model.Cadastro;
 import com.wagnerdf.fancollectorsmedia.model.Midia;
 
@@ -19,14 +19,16 @@ public interface MidiaRepository extends JpaRepository<Midia, Long> {
 	Page<Midia> findByCadastroIdOrderByTituloAlternativoAsc(Long cadastroId, Pageable pageable);
 	Page<Midia> findByCadastroEmail(String email, Pageable pageable);
 	
-	@Query("SELECT new com.wagnerdf.fancollectorsmedia.dto.MidiaBuscaDto(" +
-		       "m.id, m.tituloOriginal, m.tituloAlternativo, m.midiaTipo.nome) " +
+	@Query("SELECT new com.wagnerdf.fancollectorsmedia.dto.MidiaResponseDto(" +
+		       "m.id, m.tituloOriginal, m.tituloAlternativo, m.edicao, m.colecao, m.numeroSerie, m.faixas, " +
+		       "m.classificacaoEtaria, m.artistas, m.diretores, m.estudio, m.formatoAudio, m.formatoVideo, " +
+		       "m.observacoes, m.quantidadeItens, m.anoLancamento, m.capaUrl, m.sinopse, m.generos, m.duracao, " +
+		       "m.linguagem, m.notaMedia, m.formatoMidia, m.temporada, m.midiaTipo.nome, m.midiaTipo.id) " +
 		       "FROM Midia m " +
-		       "WHERE m.cadastro.email = :username " +  // <-- trocar username para email, por exemplo
+		       "WHERE m.cadastro.email = :username " +
 		       "AND (LOWER(m.tituloOriginal) LIKE LOWER(CONCAT('%', :query, '%')) " +
 		       "OR LOWER(m.tituloAlternativo) LIKE LOWER(CONCAT('%', :query, '%')))")
-		List<MidiaBuscaDto> buscarPorTitulo(@Param("username") String username, @Param("query") String query);
-
+		List<MidiaResponseDto> buscarPorTitulo(@Param("username") String username, @Param("query") String query);
 
 
 

@@ -7,7 +7,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.wagnerdf.fancollectorsmedia.dto.MidiaBuscaDto;
 import com.wagnerdf.fancollectorsmedia.dto.MidiaRequestDto;
 import com.wagnerdf.fancollectorsmedia.dto.MidiaResponseDto;
 import com.wagnerdf.fancollectorsmedia.model.Cadastro;
@@ -118,6 +117,7 @@ public class MidiaService {
 		dto.setFormatoMidia(midia.getFormatoMidia());
 		dto.setTemporada(midia.getTemporada());
 		dto.setTipoMidia(midia.getMidiaTipo().getNome());
+		dto.setMidiaTipoId(midia.getMidiaTipo().getId());
 
 		return dto;
 	}
@@ -174,9 +174,8 @@ public class MidiaService {
 
 	}
 	
-	public List<MidiaBuscaDto> buscarPorTitulo(String username, String query) {
+	public List<MidiaResponseDto> buscarPorTitulo(String username, String query) {
         return midiaRepository.buscarPorTitulo(username, query);
     }
-
 
 }

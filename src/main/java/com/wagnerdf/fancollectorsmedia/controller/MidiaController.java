@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.wagnerdf.fancollectorsmedia.dto.MidiaBuscaDto;
 import com.wagnerdf.fancollectorsmedia.dto.MidiaRequestDto;
 import com.wagnerdf.fancollectorsmedia.dto.MidiaResponseDto;
 import com.wagnerdf.fancollectorsmedia.service.MidiaService;
@@ -109,11 +108,11 @@ public class MidiaController {
 	}
 	
 	@GetMapping("/buscar")
-	public ResponseEntity<List<MidiaBuscaDto>> buscarMidias(
+	public ResponseEntity<List<MidiaResponseDto>> buscarMidias(
 	        @RequestParam String query,
 	        Authentication authentication) {
 	    String username = authentication.getName();
-	    List<MidiaBuscaDto> resultados = midiaService.buscarPorTitulo(username, query);
+	    List<MidiaResponseDto> resultados = midiaService.buscarPorTitulo(username, query);
 	    return ResponseEntity.ok(resultados);
 	}
 
