@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.wagnerdf.fancollectorsmedia.dto.MidiaCamposLivresDto;
 import com.wagnerdf.fancollectorsmedia.dto.MidiaRequestDto;
 import com.wagnerdf.fancollectorsmedia.dto.MidiaResponseDto;
 import com.wagnerdf.fancollectorsmedia.model.Cadastro;
@@ -177,5 +178,25 @@ public class MidiaService {
 	public List<MidiaResponseDto> buscarPorTitulo(String username, String query) {
         return midiaRepository.buscarPorTitulo(username, query);
     }
+	
+	public Midia editarCamposLivres(Long id, MidiaCamposLivresDto dto, String username) {
+	    Midia midia = midiaRepository.findById(id)
+	            .orElseThrow(() -> new RuntimeException("Mídia não encontrada"));
+
+	    if (!midia.getCadastro().getEmail().equals(username)) {
+	        throw new RuntimeException("Você não tem permissão para editar esta mídia.");
+	    }
+
+	    // Atualiza somente se o campo não for nulo
+	    if (dto.getObservacoes() != null) {
+	        midia.setObservacoes(dto.getObservacoes());
+	    }
+	    if (dto.getTemporada() != null) {
+	        midia.setTemporada(dto.getTemporada());
+	    }
+
+	    return midiaRepository.save(midia);
+	}
+
 
 }

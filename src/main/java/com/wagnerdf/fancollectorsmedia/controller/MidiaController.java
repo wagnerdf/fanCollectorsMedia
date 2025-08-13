@@ -14,6 +14,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.wagnerdf.fancollectorsmedia.dto.MidiaCamposLivresDto;
 import com.wagnerdf.fancollectorsmedia.dto.MidiaRequestDto;
 import com.wagnerdf.fancollectorsmedia.dto.MidiaResponseDto;
 import com.wagnerdf.fancollectorsmedia.service.MidiaService;
@@ -114,6 +116,15 @@ public class MidiaController {
 	    String username = authentication.getName();
 	    List<MidiaResponseDto> resultados = midiaService.buscarPorTitulo(username, query);
 	    return ResponseEntity.ok(resultados);
+	}
+	
+	@PatchMapping("/{id}/editar-campos-livres")
+	public ResponseEntity<String> editarCamposLivres(@PathVariable Long id,
+	                                                 @RequestBody MidiaCamposLivresDto dto,
+	                                                 Authentication authentication) {
+	    String username = authentication.getName();
+	    midiaService.editarCamposLivres(id, dto, username);
+	    return ResponseEntity.ok("Campos atualizados com sucesso");
 	}
 
 }
