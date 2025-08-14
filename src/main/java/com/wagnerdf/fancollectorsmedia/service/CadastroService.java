@@ -120,11 +120,14 @@ public class CadastroService {
         enderecoRepository.save(endereco);
         cadastroRepository.save(cadastro);
 
-        // Atualiza a senha, se informada
+     // Atualiza a senha, se informada e se não for usuário ADMIN
         if (dto.getNovaSenha() != null && !dto.getNovaSenha().isBlank()) {
+            if (usuario.getPapel() != null && "ROLE_ADMIN".equals(usuario.getPapel().getNome())) {
+                throw new RuntimeException("Não é permitido alterar a senha do usuário ADMIN.");
+            }
+
             usuario.setSenha(passwordEncoder.encode(dto.getNovaSenha()));
             usuarioRepository.save(usuario);
         }
     }
-
 }

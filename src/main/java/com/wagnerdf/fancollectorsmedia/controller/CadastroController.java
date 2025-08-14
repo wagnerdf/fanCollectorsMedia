@@ -106,12 +106,18 @@ public class CadastroController {
 	}
 	
 	@PutMapping("/perfilEditar")
-    public ResponseEntity<?> atualizarCadastro(
-        @RequestBody AtualizarCadastroDto dto,
-        @AuthenticationPrincipal UserDetails userDetails
-    ) {
-        cadastroService.atualizarCadastro(dto, userDetails.getUsername());
-        return ResponseEntity.ok().build();
-    }
+	public ResponseEntity<String> atualizarCadastro(
+	        @RequestBody AtualizarCadastroDto dto,
+	        @AuthenticationPrincipal UserDetails userDetails
+	) {
+	    try {
+	        cadastroService.atualizarCadastro(dto, userDetails.getUsername());
+	        return ResponseEntity.ok("Cadastro atualizado com sucesso!");
+	    } catch (RuntimeException ex) {
+	        // Retorna a mensagem da exceção para o frontend
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+	    }
+	}
+
 
 }
