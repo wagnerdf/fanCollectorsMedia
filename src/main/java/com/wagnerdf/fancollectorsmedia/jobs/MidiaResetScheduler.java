@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
-@ConditionalOnProperty(name = "seed.reset.enabled", havingValue = "true", matchIfMissing = true)
 public class MidiaResetScheduler {
 
     private static final String SCRIPT_PATH = "scripts/reset_midia.sql";
@@ -21,14 +20,23 @@ public class MidiaResetScheduler {
         this.sqlScriptRunner = sqlScriptRunner;
     }
 
-    // Roda 10s após subir a app (para facilitar testes) e depois a cada 48h, contando do fim da execução
-    @Scheduled(initialDelayString = "PT10S", fixedDelayString = "PT48H", cron = "0 0 3 */2 * *")
-    public void executarResetPeriodico() {
-        log.info("Iniciando reset periódico de mídias do usuário de teste (id=43)...");
+    // ✅ Somente para ambiente local (testes)
+    @Scheduled(initialDelayString = "PT10S", fixedDelayString = "PT48H")
+    @ConditionalOnProperty(name = "scheduler.midia.reset.mode", havingValue = "local")
+    public void executarResetLocal() {
+        log.info("Iniciando reset periódico de mídias (modo LOCAL: delay)...");
         sqlScriptRunner.runScriptFromClasspath(SCRIPT_PATH);
-        log.info("Reset periódico concluído.");
+        log.info("Reset concluído (modo LOCAL).");
     }
 
-    
+    // ✅ Somente para produção
+    @Scheduled(cron = "0 0 3 */2 * *")
+    @ConditionalOnProperty(name = "scheduler.midia.reset.mode", havingValue = "prod")
+    public void executarResetProd() {
+        log.info("Iniciando reset periódico de mídias (modo PROD: cron)...");
+        sqlScriptRunner.runScriptFromClasspath(SCRIPT_PATH);
+        log.info("Reset concluído (modo PROD).");
+    }
 }
+
 

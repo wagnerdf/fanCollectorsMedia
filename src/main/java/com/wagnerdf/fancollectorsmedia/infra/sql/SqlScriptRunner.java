@@ -1,13 +1,15 @@
 package com.wagnerdf.fancollectorsmedia.infra.sql;
 
-import lombok.extern.slf4j.Slf4j;
+import java.sql.Connection;
+import java.sql.SQLException;
+
+import javax.sql.DataSource;
+
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.stereotype.Component;
 
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.SQLException;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
