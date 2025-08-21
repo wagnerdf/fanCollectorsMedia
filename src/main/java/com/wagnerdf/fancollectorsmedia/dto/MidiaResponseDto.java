@@ -32,7 +32,7 @@ public class MidiaResponseDto {
     private Integer anoLancamento;
     private String capaUrl;
     private Long midiaTipoId;
-    private String tipoMidia;
+    private String midiaTipoNome;
 
     public MidiaResponseDto(Long id, String tituloOriginal, String tituloAlternativo, String edicao, String colecao,
             String numeroSerie, String faixas, String classificacaoEtaria, String artistas, String diretores,
@@ -63,8 +63,8 @@ public class MidiaResponseDto {
         this.notaMedia = notaMedia;
         this.formatoMidia = formatoMidia;
         this.temporada = temporada;
-        this.tipoMidia = midiaTipoNome;
         this.midiaTipoId = midiaTipoId;
+        this.midiaTipoNome = midiaTipoNome;
     }
 }
 

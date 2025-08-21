@@ -78,6 +78,9 @@ public class Midia {
     public void preUpdate() {
         this.atualizadoEm = LocalDateTime.now();
     }
+    
+    @Column(name = "midia_tipo_nome") // mapeia a nova coluna
+    private String midiaTipoNome;
 
 }
 

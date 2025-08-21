@@ -34,4 +34,5 @@ public class MidiaRequestDto {
     private Double notaMedia;
     private String formatoMidia;
     private String temporada;
+    private String midiaTipoNome;
 }
