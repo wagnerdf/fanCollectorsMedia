@@ -1,4 +1,6 @@
 -- Deleta todas as mídias do usuário de teste (id = 3)
+
+SET client_encoding = 'UTF8';
 DELETE FROM midia
 WHERE cadastro_id = 3;
 
