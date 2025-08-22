@@ -14,6 +14,7 @@ import com.wagnerdf.fancollectorsmedia.model.Cadastro;
 import com.wagnerdf.fancollectorsmedia.model.Midia;
 import com.wagnerdf.fancollectorsmedia.model.MidiaTipo;
 import com.wagnerdf.fancollectorsmedia.repository.MidiaRepository;
+import com.wagnerdf.fancollectorsmedia.repository.MidiaTipoRepository;
 
 @Service
 public class MidiaService {
@@ -26,6 +27,9 @@ public class MidiaService {
 
 	@Autowired
 	private MidiaTipoService midiaTipoService;
+	
+	@Autowired
+	private MidiaTipoRepository midiaTipoRepository;
 
 	// Agora recebe username do usuário logado para buscar o Cadastro
 	public Midia salvarMidia(MidiaRequestDto dto, String username) {
@@ -201,14 +205,11 @@ public class MidiaService {
 	        midia.setMidiaTipoNome(dto.getMidiaTipoNome());
 	    }
 	    if (dto.getMidiaTipoId() != null) {
-	        MidiaTipo tipo = new MidiaTipo();
+	        MidiaTipo tipo = new MidiaTlisipo();
 	        tipo.setId(dto.getMidiaTipoId());
 	        midia.setMidiaTipo(tipo);
 	    }
 
 	    return midiaRepository.save(midia);
 	}
-
-
-
 }

@@ -26,7 +26,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.wagnerdf.fancollectorsmedia.dto.MidiaCamposLivresDto;
 import com.wagnerdf.fancollectorsmedia.dto.MidiaRequestDto;
 import com.wagnerdf.fancollectorsmedia.dto.MidiaResponseDto;
+import com.wagnerdf.fancollectorsmedia.model.MidiaTipo;
 import com.wagnerdf.fancollectorsmedia.service.MidiaService;
+import com.wagnerdf.fancollectorsmedia.service.MidiaTipoService;
 
 @RestController
 @RequestMapping("/api/midias")
@@ -34,6 +36,9 @@ public class MidiaController {
 
 	@Autowired
     private MidiaService midiaService;
+	
+	@Autowired
+	private MidiaTipoService midiaTipoService;
 
 	public MidiaController(MidiaService midiaService) {
 		this.midiaService = midiaService;
@@ -126,5 +131,10 @@ public class MidiaController {
 	    midiaService.editarCamposLivres(id, dto, username);
 	    return ResponseEntity.ok("Campos atualizados com sucesso");
 	}
+	
+	@GetMapping("/selecao")
+    public List<MidiaTipo> listarTiposParaSelecao(@RequestParam List<Long> ids) {
+        return midiaTipoService.listarPorIds(ids);
+    }
 
 }

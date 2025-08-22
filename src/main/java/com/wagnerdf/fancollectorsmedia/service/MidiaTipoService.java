@@ -46,5 +46,10 @@ public class MidiaTipoService {
 	        .map(m -> new MidiaTipoDto(m.getId(), m.getNome(), m.getDescricao()))
 	        .collect(Collectors.toList());
 	}
+	
+	public List<MidiaTipo> listarPorIds(List<Long> ids) {
+        return midiaTipoRepository.findByIdIn(ids);
+    }
+
 
 }
