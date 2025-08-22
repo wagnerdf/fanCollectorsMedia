@@ -197,9 +197,18 @@ public class MidiaService {
 	    if (dto.getTemporada() != null) {
 	        midia.setTemporada(dto.getTemporada());
 	    }
+	    if (dto.getMidiaTipoNome() != null) {          
+	        midia.setMidiaTipoNome(dto.getMidiaTipoNome());
+	    }
+	    if (dto.getMidiaTipoId() != null) {
+	        MidiaTipo tipo = new MidiaTipo();
+	        tipo.setId(dto.getMidiaTipoId());
+	        midia.setMidiaTipo(tipo);
+	    }
 
 	    return midiaRepository.save(midia);
 	}
+
 
 
 }
