@@ -23,7 +23,7 @@ public interface MidiaRepository extends JpaRepository<Midia, Long> {
 		       "m.id, m.tituloOriginal, m.tituloAlternativo, m.edicao, m.colecao, m.numeroSerie, m.faixas, " +
 		       "m.classificacaoEtaria, m.artistas, m.diretores, m.estudio, m.formatoAudio, m.formatoVideo, " +
 		       "m.observacoes, m.quantidadeItens, m.anoLancamento, m.capaUrl, m.sinopse, m.generos, m.duracao, " +
-		       "m.linguagem, m.notaMedia, m.formatoMidia, m.temporada, m.midiaTipoNome, m.midiaTipo.id) " +
+		       "m.linguagem, m.notaMedia, m.formatoMidia, m.temporada, m.midiaTipo.id, m.midiaTipo.nome) " +
 		       "FROM Midia m " +
 		       "WHERE m.cadastro.email = :username " +
 		       "AND (LOWER(m.tituloOriginal) LIKE LOWER(CONCAT('%', :query, '%')) " +

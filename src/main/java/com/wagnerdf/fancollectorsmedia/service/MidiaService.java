@@ -118,8 +118,9 @@ public class MidiaService {
 		dto.setNotaMedia(midia.getNotaMedia());
 		dto.setFormatoMidia(midia.getFormatoMidia());
 		dto.setTemporada(midia.getTemporada());
-		dto.setMidiaTipoNome(midia.getMidiaTipoNome());
 		dto.setMidiaTipoId(midia.getMidiaTipo().getId());
+		dto.setMidiaTipoNome(midia.getMidiaTipo().getNome());
+
 
 		return dto;
 	}

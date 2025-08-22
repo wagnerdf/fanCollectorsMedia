@@ -38,7 +38,7 @@ public class MidiaResponseDto {
             String numeroSerie, String faixas, String classificacaoEtaria, String artistas, String diretores,
             String estudio, String formatoAudio, String formatoVideo, String observacoes, Integer quantidadeItens,
             Integer anoLancamento, String capaUrl, String sinopse, String generos, Integer duracao, String linguagem,
-            Double notaMedia, String formatoMidia, String temporada, String midiaTipoNome, Long midiaTipoId) {
+            Double notaMedia, String formatoMidia, String temporada, Long midiaTipoId, String midiaTipoNome) {
         this.id = id;
         this.tituloOriginal = tituloOriginal;
         this.tituloAlternativo = tituloAlternativo;
@@ -66,5 +66,6 @@ public class MidiaResponseDto {
         this.midiaTipoId = midiaTipoId;
         this.midiaTipoNome = midiaTipoNome;
     }
+
 }
 
