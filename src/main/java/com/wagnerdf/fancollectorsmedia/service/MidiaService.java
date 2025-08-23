@@ -205,7 +205,7 @@ public class MidiaService {
 	        midia.setMidiaTipoNome(dto.getMidiaTipoNome());
 	    }
 	    if (dto.getMidiaTipoId() != null) {
-	        MidiaTipo tipo = new MidiaTlisipo();
+	        MidiaTipo tipo = new MidiaTipo();
 	        tipo.setId(dto.getMidiaTipoId());
 	        midia.setMidiaTipo(tipo);
 	    }
