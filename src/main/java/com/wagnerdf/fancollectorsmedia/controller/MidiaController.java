@@ -1,6 +1,8 @@
 package com.wagnerdf.fancollectorsmedia.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wagnerdf.fancollectorsmedia.dto.MidiaCamposLivresDto;
+import com.wagnerdf.fancollectorsmedia.dto.MidiaListagemDto;
 import com.wagnerdf.fancollectorsmedia.dto.MidiaRequestDto;
 import com.wagnerdf.fancollectorsmedia.dto.MidiaResponseDto;
 import com.wagnerdf.fancollectorsmedia.model.MidiaTipo;
@@ -35,8 +38,8 @@ import com.wagnerdf.fancollectorsmedia.service.MidiaTipoService;
 public class MidiaController {
 
 	@Autowired
-    private MidiaService midiaService;
-	
+	private MidiaService midiaService;
+
 	@Autowired
 	private MidiaTipoService midiaTipoService;
 
@@ -71,70 +74,89 @@ public class MidiaController {
 		MidiaResponseDto midia = midiaService.buscarMidiaPorId(id, username);
 		return ResponseEntity.ok(midia);
 	}
-	
+
 	@PutMapping("/{id}")
-	public ResponseEntity<String> atualizarMidia(@PathVariable Long id,
-	                                             @RequestBody MidiaRequestDto dto,
-	                                             Authentication authentication) {
-	    String username = authentication.getName();
-	    midiaService.editarMidia(id, dto, username);
-	    return ResponseEntity.ok("Mídia atualizada com sucesso");
+	public ResponseEntity<String> atualizarMidia(@PathVariable Long id, @RequestBody MidiaRequestDto dto,
+			Authentication authentication) {
+		String username = authentication.getName();
+		midiaService.editarMidia(id, dto, username);
+		return ResponseEntity.ok("Mídia atualizada com sucesso");
 	}
-	
+
 	@GetMapping("/usuario")
-	public ResponseEntity<?> listarMidiasDoUsuario(
-	        @AuthenticationPrincipal UserDetails userDetails,
-	        @RequestParam(required = false) Boolean all,
-	        @PageableDefault(size = 25) Pageable pageable) {
+	public ResponseEntity<?> listarMidiasDoUsuario(@AuthenticationPrincipal UserDetails userDetails,
+			@RequestParam(required = false) Boolean all, @PageableDefault(size = 25) Pageable pageable) {
 
-	    String username = userDetails.getUsername();
+		String username = userDetails.getUsername();
 
-	    if (Boolean.TRUE.equals(all)) {
-	        // Retorna todas as mídias (sem paginação)
-	        List<MidiaResponseDto> midias = midiaService.listarMidiasDoUsuario(username);
-	        return ResponseEntity.ok(midias);
-	    } else {
-	        // Retorna mídia paginada
-	        Page<MidiaResponseDto> midiasPaginadas = midiaService.listarMidiasDoUsuarioPaginadas(username, pageable);
-	        return ResponseEntity.ok(midiasPaginadas);
-	    }
+		if (Boolean.TRUE.equals(all)) {
+			// Retorna todas as mídias (sem paginação)
+			List<MidiaResponseDto> midias = midiaService.listarMidiasDoUsuario(username);
+			return ResponseEntity.ok(midias);
+		} else {
+			// Retorna mídia paginada
+			Page<MidiaResponseDto> midiasPaginadas = midiaService.listarMidiasDoUsuarioPaginadas(username, pageable);
+			return ResponseEntity.ok(midiasPaginadas);
+		}
 	}
-
 
 	@GetMapping("/usuario/paginado")
 	public ResponseEntity<Page<MidiaResponseDto>> listarMidiasPaginadasDoUsuario(
-	        @AuthenticationPrincipal UserDetails userDetails,
-	        @RequestParam(defaultValue = "0") int page,
-	        @RequestParam(defaultValue = "25") int size
-	) {
-	    String username = userDetails.getUsername();
-	    Pageable pageable = PageRequest.of(page, size, Sort.by("tituloAlternativo").ascending());
-	    Page<MidiaResponseDto> midias = midiaService.listarMidiasPaginadas(username, pageable);
+			@AuthenticationPrincipal UserDetails userDetails, @RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "25") int size) {
+		String username = userDetails.getUsername();
+		Pageable pageable = PageRequest.of(page, size, Sort.by("tituloAlternativo").ascending());
+		Page<MidiaResponseDto> midias = midiaService.listarMidiasPaginadas(username, pageable);
 
-	    return ResponseEntity.ok(midias);
+		return ResponseEntity.ok(midias);
 	}
-	
+
 	@GetMapping("/buscar")
-	public ResponseEntity<List<MidiaResponseDto>> buscarMidias(
-	        @RequestParam String query,
-	        Authentication authentication) {
-	    String username = authentication.getName();
-	    List<MidiaResponseDto> resultados = midiaService.buscarPorTitulo(username, query);
-	    return ResponseEntity.ok(resultados);
+	public ResponseEntity<List<MidiaResponseDto>> buscarMidias(@RequestParam String query,
+			Authentication authentication) {
+		String username = authentication.getName();
+		List<MidiaResponseDto> resultados = midiaService.buscarPorTitulo(username, query);
+		return ResponseEntity.ok(resultados);
 	}
-	
+
 	@PatchMapping("/{id}/editar-campos-livres")
-	public ResponseEntity<String> editarCamposLivres(@PathVariable Long id,
-	                                                 @RequestBody MidiaCamposLivresDto dto,
-	                                                 Authentication authentication) {
-	    String username = authentication.getName();
-	    midiaService.editarCamposLivres(id, dto, username);
-	    return ResponseEntity.ok("Campos atualizados com sucesso");
+	public ResponseEntity<String> editarCamposLivres(@PathVariable Long id, @RequestBody MidiaCamposLivresDto dto,
+			Authentication authentication) {
+		String username = authentication.getName();
+		midiaService.editarCamposLivres(id, dto, username);
+		return ResponseEntity.ok("Campos atualizados com sucesso");
 	}
-	
+
 	@GetMapping("/selecao")
-    public List<MidiaTipo> listarTiposParaSelecao(@RequestParam List<Long> ids) {
-        return midiaTipoService.listarPorIds(ids);
-    }
+	public List<MidiaTipo> listarTiposParaSelecao(@RequestParam List<Long> ids) {
+		return midiaTipoService.listarPorIds(ids);
+	}
+
+	@GetMapping("/tipos-nomes")
+	public ResponseEntity<?> listarMidiasPorTipos(
+	        Authentication authentication,
+	        @RequestParam(required = false) List<String> tipos,
+	        @RequestParam(required = false) Boolean all,
+	        @PageableDefault(size = 25) Pageable pageable) {
+
+	    String email = authentication.getName();
+	    Page<MidiaListagemDto> page;
+
+	    if (Boolean.TRUE.equals(all) || tipos == null || tipos.isEmpty()) {
+	        page = midiaService.listarTodosDoUsuario(email, pageable);
+	    } else {
+	        page = midiaService.listarPorTiposDoUsuario(email, tipos, pageable);
+	    }
+
+	    // Converter Page em mapa JSON estável
+	    Map<String, Object> response = new HashMap<>();
+	    response.put("content", page.getContent());
+	    response.put("page", page.getNumber());
+	    response.put("size", page.getSize());
+	    response.put("totalElements", page.getTotalElements());
+	    response.put("totalPages", page.getTotalPages());
+
+	    return ResponseEntity.ok(response);
+	}
 
 }
