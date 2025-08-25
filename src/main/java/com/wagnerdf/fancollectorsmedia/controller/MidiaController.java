@@ -62,9 +62,9 @@ public class MidiaController {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<MidiaResponseDto>> listarTodas(Authentication authentication) {
+	public ResponseEntity<List<MidiaListagemDto>> listarTodas(Authentication authentication) {
 		String username = authentication.getName();
-		List<MidiaResponseDto> midias = midiaService.listarMidiasDoUsuario(username);
+		List<MidiaListagemDto> midias = midiaService.listarMidiasDoUsuario(username);
 		return ResponseEntity.ok(midias);
 	}
 
@@ -91,22 +91,24 @@ public class MidiaController {
 
 		if (Boolean.TRUE.equals(all)) {
 			// Retorna todas as mídias (sem paginação)
-			List<MidiaResponseDto> midias = midiaService.listarMidiasDoUsuario(username);
+			List<MidiaListagemDto> midias = midiaService.listarMidiasDoUsuario(username);
 			return ResponseEntity.ok(midias);
 		} else {
 			// Retorna mídia paginada
-			Page<MidiaResponseDto> midiasPaginadas = midiaService.listarMidiasDoUsuarioPaginadas(username, pageable);
+			Page<MidiaListagemDto> midiasPaginadas = midiaService.listarMidiasDoUsuarioPaginadas(username, pageable);
 			return ResponseEntity.ok(midiasPaginadas);
 		}
 	}
 
 	@GetMapping("/usuario/paginado")
-	public ResponseEntity<Page<MidiaResponseDto>> listarMidiasPaginadasDoUsuario(
+	public ResponseEntity<Page<MidiaListagemDto>> listarMidiasPaginadasDoUsuario(
 			@AuthenticationPrincipal UserDetails userDetails, @RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "25") int size) {
+
 		String username = userDetails.getUsername();
 		Pageable pageable = PageRequest.of(page, size, Sort.by("tituloAlternativo").ascending());
-		Page<MidiaResponseDto> midias = midiaService.listarMidiasPaginadas(username, pageable);
+
+		Page<MidiaListagemDto> midias = midiaService.listarMidiasPaginadas(username, pageable);
 
 		return ResponseEntity.ok(midias);
 	}
@@ -133,30 +135,28 @@ public class MidiaController {
 	}
 
 	@GetMapping("/tipos-nomes")
-	public ResponseEntity<?> listarMidiasPorTipos(
-	        Authentication authentication,
-	        @RequestParam(required = false) List<String> tipos,
-	        @RequestParam(required = false) Boolean all,
-	        @PageableDefault(size = 25) Pageable pageable) {
+	public ResponseEntity<?> listarMidiasPorTipos(Authentication authentication,
+			@RequestParam(required = false) List<String> tipos, @RequestParam(required = false) Boolean all,
+			@PageableDefault(size = 25) Pageable pageable) {
 
-	    String email = authentication.getName();
-	    Page<MidiaListagemDto> page;
+		String email = authentication.getName();
+		Page<MidiaListagemDto> page;
 
-	    if (Boolean.TRUE.equals(all) || tipos == null || tipos.isEmpty()) {
-	        page = midiaService.listarTodosDoUsuario(email, pageable);
-	    } else {
-	        page = midiaService.listarPorTiposDoUsuario(email, tipos, pageable);
-	    }
+		if (Boolean.TRUE.equals(all) || tipos == null || tipos.isEmpty()) {
+			page = midiaService.listarTodosDoUsuario(email, pageable);
+		} else {
+			page = midiaService.listarPorTiposDoUsuario(email, tipos, pageable);
+		}
 
-	    // Converter Page em mapa JSON estável
-	    Map<String, Object> response = new HashMap<>();
-	    response.put("content", page.getContent());
-	    response.put("page", page.getNumber());
-	    response.put("size", page.getSize());
-	    response.put("totalElements", page.getTotalElements());
-	    response.put("totalPages", page.getTotalPages());
+		// Converter Page em mapa JSON estável
+		Map<String, Object> response = new HashMap<>();
+		response.put("content", page.getContent());
+		response.put("page", page.getNumber());
+		response.put("size", page.getSize());
+		response.put("totalElements", page.getTotalElements());
+		response.put("totalPages", page.getTotalPages());
 
-	    return ResponseEntity.ok(response);
+		return ResponseEntity.ok(response);
 	}
 
 }

@@ -20,7 +20,7 @@ public interface MidiaRepository extends JpaRepository<Midia, Long> {
 
 	Page<Midia> findByCadastroIdOrderByTituloAlternativoAsc(Long cadastroId, Pageable pageable);
 
-	Page<Midia> findByCadastroEmail(String email, Pageable pageable);
+	// Page<Midia> findByCadastroEmail(String username, Pageable pageable);
 
 	@Query("SELECT new com.wagnerdf.fancollectorsmedia.dto.MidiaResponseDto("
 			+ "m.id, m.tituloOriginal, m.tituloAlternativo, m.edicao, m.colecao, m.numeroSerie, m.faixas, "
@@ -33,9 +33,26 @@ public interface MidiaRepository extends JpaRepository<Midia, Long> {
 	List<MidiaResponseDto> buscarPorTitulo(@Param("username") String username, @Param("query") String query);
 
 	@Query("SELECT new com.wagnerdf.fancollectorsmedia.dto.MidiaListagemDto("
-			+ "m.capaUrl, m.midiaTipoNome, m.generos, m.tituloAlternativo) " + "FROM Midia m "
+			+ "m.id, m.capaUrl, m.midiaTipoNome, m.generos, m.tituloAlternativo) " + "FROM Midia m "
 			+ "WHERE m.cadastro.email = :email " + "AND (:tipos IS NULL OR m.midiaTipoNome IN :tipos)")
 	Page<MidiaListagemDto> findByTiposAndUsuario(@Param("email") String email, @Param("tipos") List<String> tipos,
 			Pageable pageable);
+
+	// Retorna todas as mídias de um cadastro como DTO
+	@Query("SELECT new com.wagnerdf.fancollectorsmedia.dto.MidiaListagemDto("
+			+ "m.id, m.capaUrl, m.midiaTipo.nome, m.generos, m.tituloAlternativo) "
+			+ "FROM Midia m WHERE m.cadastro = :cadastro")
+	List<MidiaListagemDto> findByCadastroDto(Cadastro cadastro);
+
+	// Retorna mídias paginadas de um cadastro pelo email como DTO
+	@Query("SELECT new com.wagnerdf.fancollectorsmedia.dto.MidiaListagemDto("
+			+ "m.id, m.capaUrl, m.midiaTipo.nome, m.generos, m.tituloAlternativo) "
+			+ "FROM Midia m WHERE m.cadastro.email = :email")
+	Page<MidiaListagemDto> findByCadastroEmailDto(String email, Pageable pageable);
+
+	@Query("SELECT new com.wagnerdf.fancollectorsmedia.dto.MidiaListagemDto("
+			+ "m.id, m.capaUrl, mt.nome, m.generos, m.tituloAlternativo) " + "FROM Midia m " + "JOIN m.midiaTipo mt "
+			+ "WHERE m.cadastro.id = :cadastroId")
+	List<MidiaListagemDto> listarMidiasPorCadastro(@Param("cadastroId") Long cadastroId);
 
 }

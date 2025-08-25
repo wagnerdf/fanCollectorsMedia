@@ -77,9 +77,10 @@ public class MidiaService {
 		midiaRepository.delete(midia);
 	}
 
-	public List<MidiaResponseDto> listarMidiasDoUsuario(String username) {
+	// Lista todas as mídias de um usuário (sem paginação)
+	public List<MidiaListagemDto> listarMidiasDoUsuario(String username) {
 		Cadastro cadastro = cadastroService.buscarPorUsername(username);
-		return midiaRepository.findByCadastro(cadastro).stream().map(this::toDto).toList();
+		return midiaRepository.findByCadastroDto(cadastro);
 	}
 
 	public MidiaResponseDto buscarMidiaPorId(Long id, String username) {
@@ -164,14 +165,13 @@ public class MidiaService {
 		return midiaRepository.save(midia);
 	}
 
-	public Page<MidiaResponseDto> listarMidiasPaginadas(String username, Pageable pageable) {
-		Cadastro cadastro = cadastroService.buscarPorUsername(username);
-		return midiaRepository.findByCadastroIdOrderByTituloAlternativoAsc(cadastro.getId(), pageable).map(this::toDto);
-	}
+	public Page<MidiaListagemDto> listarMidiasPaginadas(String email, Pageable pageable) {
+        return midiaRepository.findByCadastroEmailDto(email, pageable);
+    }
 
-	public Page<MidiaResponseDto> listarMidiasDoUsuarioPaginadas(String username, Pageable pageable) {
-		return midiaRepository.findByCadastroEmail(username, pageable).map(this::toDto);
-
+	// Lista mídias paginadas de um usuário
+	public Page<MidiaListagemDto> listarMidiasDoUsuarioPaginadas(String username, Pageable pageable) {
+		return midiaRepository.findByCadastroEmailDto(username, pageable);
 	}
 
 	public List<MidiaResponseDto> buscarPorTitulo(String username, String query) {
