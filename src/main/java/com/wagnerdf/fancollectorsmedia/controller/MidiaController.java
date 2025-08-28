@@ -134,6 +134,7 @@ public class MidiaController {
 		return midiaTipoService.listarPorIds(ids);
 	}
 
+	// Lista todas as midias do usuário por tipo de midia e tras páginado
 	@GetMapping("/tipos-nomes")
 	public ResponseEntity<?> listarMidiasPorTipos(Authentication authentication,
 			@RequestParam(required = false) List<String> tipos, @RequestParam(required = false) Boolean all,
@@ -158,5 +159,26 @@ public class MidiaController {
 
 		return ResponseEntity.ok(response);
 	}
+	
+	// Lista todas as midias do usuário por tipo de midia sem páginação
+	@GetMapping("/tipos-nomes-lista")
+	public ResponseEntity<?> listarMidiasPorTiposSemPaginacao(
+	        Authentication authentication,
+	        @RequestParam(required = false) List<String> tipos,
+	        @RequestParam(required = false) Boolean all) {
+
+	    String email = authentication.getName();
+	    List<MidiaListagemDto> lista;
+
+	    if (Boolean.TRUE.equals(all) || tipos == null || tipos.isEmpty()) {
+	        lista = midiaService.listarTodosDoUsuarioSemPaginacao(email);
+	    } else {
+	        lista = midiaService.listarPorTiposDoUsuarioSemPaginacao(email, tipos);
+	    }
+
+	    // Retornar direto a lista como JSON
+	    return ResponseEntity.ok(lista);
+	}
+
 
 }

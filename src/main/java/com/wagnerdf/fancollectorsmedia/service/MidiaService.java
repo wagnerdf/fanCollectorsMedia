@@ -216,12 +216,24 @@ public class MidiaService {
 		});
 	}
 
+	//versões com paginação de midias do usuario e tipoMidia
 	public Page<MidiaListagemDto> listarPorTiposDoUsuario(String email, List<String> tipos, Pageable pageable) {
 		return midiaRepository.findByTiposAndUsuario(email, tipos, pageable);
 	}
 
 	public Page<MidiaListagemDto> listarTodosDoUsuario(String email, Pageable pageable) {
 		return midiaRepository.findByTiposAndUsuario(email, null, pageable);
+	}
+	
+	//versões sem paginação de midias do usuario e tipoMidia
+	public List<MidiaListagemDto> listarPorTiposDoUsuarioSemPaginacao(String email, List<String> tipos) {
+	    // Chama o repository equivalente sem Pageable
+	    return midiaRepository.findByTiposAndUsuarioSemPaginacao(email, tipos);
+	}
+
+	public List<MidiaListagemDto> listarTodosDoUsuarioSemPaginacao(String email) {
+	    // Chama o repository equivalente sem Pageable
+	    return midiaRepository.findByTiposAndUsuarioSemPaginacao(email, null);
 	}
 
 }
