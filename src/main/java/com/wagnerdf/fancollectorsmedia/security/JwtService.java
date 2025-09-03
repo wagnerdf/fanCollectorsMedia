@@ -1,8 +1,10 @@
 package com.wagnerdf.fancollectorsmedia.security;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -13,27 +15,26 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import lombok.RequiredArgsConstructor;
 
 @Service
-@RequiredArgsConstructor
 public class JwtService {
 
-    private static final String SECRET_KEY = "12345678901234567890123456789012"; // 32 chars (256 bits)
+    @Value("${api.config.secret}")
+    private String secretKey; // agora vem do application.properties / ambiente
 
     private static final long ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 60 * 2; // 2 horas
-    //private static final long ACCESS_TOKEN_EXPIRATION = 1000 * 60; // 1 minuto
     private static final long REFRESH_TOKEN_EXPIRATION = 1000L * 60L * 60L * 24L * 7L; // 7 dias
 
+    // ------------------ GERAÇÃO DE TOKENS ------------------
+
     public String generateToken(Usuario usuario) {
-    	
-    	Date expirationDate = new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRATION);
-    	System.out.println("[JWT] Access Token gerado para '" + usuario.getLogin() + "' com expiração em: " + expirationDate);
-    	
+        Date expirationDate = new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRATION);
+        System.out.println("[JWT] Access Token gerado para '" + usuario.getLogin() + "' com expiração em: " + expirationDate);
+
         return Jwts.builder()
                 .setSubject(usuario.getLogin())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRATION))
+                .setIssuedAt(new Date())
+                .setExpiration(expirationDate)
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -51,13 +52,23 @@ public class JwtService {
     }
 
     public String generateRefreshToken(String username) {
+        Date expirationDate = new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRATION);
+        System.out.println("[JWT] Refresh Token gerado para '" + username + "' com expiração em: " + expirationDate);
+
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRATION))
+                .setExpiration(expirationDate)
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
+
+    public String generateTokenFromRefreshToken(String refreshToken) {
+        String username = extractUsername(refreshToken);
+        return generateTokenFromUsername(username);
+    }
+
+    // ------------------ VALIDAÇÃO ------------------
 
     public boolean isTokenValid(String token, String username) {
         return extractUsername(token).equals(username) && !isTokenExpired(token);
@@ -84,18 +95,28 @@ public class JwtService {
         }
     }
 
-    public String generateTokenFromRefreshToken(String refreshToken) {
-        String username = extractUsername(refreshToken);
-        return generateTokenFromUsername(username);
+    // ------------------ EXTRAÇÃO DE DADOS ------------------
+
+    public Claims extractAllClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(getSignKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 
     public String extractUsername(String token) {
         return getClaims(token).getSubject();
     }
 
-    private boolean isTokenExpired(String token) {
+    // ------------------ MÉTODOS PÚBLICOS ------------------
+
+    // Agora público para o AuthController usar
+    public boolean isTokenExpired(String token) {
         return getClaims(token).getExpiration().before(new Date());
     }
+
+    // ------------------ MÉTODOS PRIVADOS ------------------
 
     private Claims getClaims(String token) {
         return Jwts.parserBuilder()
@@ -106,6 +127,6 @@ public class JwtService {
     }
 
     private Key getSignKey() {
-        return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+        return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 }

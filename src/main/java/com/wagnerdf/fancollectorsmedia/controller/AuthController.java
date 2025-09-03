@@ -1,6 +1,8 @@
 package com.wagnerdf.fancollectorsmedia.controller;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -12,8 +14,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -33,6 +37,7 @@ import com.wagnerdf.fancollectorsmedia.service.AuthService;
 import com.wagnerdf.fancollectorsmedia.service.EmailService;
 import com.wagnerdf.fancollectorsmedia.service.RecuperacaoSenhaService;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.validation.Valid;
 
@@ -151,6 +156,58 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
     }
+    
+    @GetMapping("/validate")
+    public ResponseEntity<?> validateToken(@RequestHeader("Authorization") String token) {
+        try {
+            String jwt = token.replace("Bearer ", "");
+            Claims claims = jwtService.extractAllClaims(jwt);
 
+            boolean expired = claims.getExpiration().before(new Date());
+            String username = jwtService.extractUsername(jwt);
+
+            return ResponseEntity.ok(Map.of(
+                "valid", !expired,
+                "username", username,
+                "expiresAt", claims.getExpiration().toInstant()
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of(
+                "valid", false,
+                "error", "Token inválido ou expirado"
+            ));
+        }
+    }
+    
+ // ------------------ REFRESH TOKEN ------------------
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refreshToken(@RequestHeader("Authorization") String refreshToken) {
+        try {
+            String jwt = refreshToken.replace("Bearer ", "");
+
+            // Verifica se o refresh token expirou
+            if (jwtService.isTokenExpired(jwt)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of(
+                        "error", "Refresh token expirado"
+                ));
+            }
+
+            // Extrai o username do refresh token
+            String username = jwtService.extractUsername(jwt);
+
+            // Gera um novo access token
+            String newAccessToken = jwtService.generateTokenFromUsername(username);
+
+            // Retorna novo access token e mantém o refresh token
+            return ResponseEntity.ok(Map.of(
+                    "accessToken", newAccessToken,
+                    "refreshToken", jwt
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of(
+                    "error", "Refresh token inválido"
+            ));
+        }
+    }
 
 }
