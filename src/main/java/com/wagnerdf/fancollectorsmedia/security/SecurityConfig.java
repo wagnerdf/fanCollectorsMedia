@@ -62,6 +62,7 @@ public class SecurityConfig {
                     "/api/hobbies",
                     "/cadastros/**"
                 ).permitAll()
+                .requestMatchers("/api/config/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
             .exceptionHandling(ex -> ex
@@ -92,4 +93,6 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+    
+    
 }
