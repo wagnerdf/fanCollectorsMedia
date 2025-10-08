@@ -83,7 +83,8 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOriginPatterns(List.of(
         	    "http://localhost:3000",
-        	    "https://fan-collectors-frontend-app.vercel.app/"
+        	    "https://fan-collectors-frontend-app.vercel.app/",
+        	    "http://localhost:8081"
         	));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
