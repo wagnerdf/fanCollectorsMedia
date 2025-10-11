@@ -179,6 +179,17 @@ public class MidiaController {
 	    // Retornar direto a lista como JSON
 	    return ResponseEntity.ok(lista);
 	}
+	
+	// Retorna o total de mídias do usuário logado
+	@GetMapping("/usuario/total")
+	public ResponseEntity<Map<String, Object>> totalMidiasDoUsuario(@AuthenticationPrincipal UserDetails userDetails) {
+	    String email = userDetails.getUsername();
+	    long total = midiaService.contarMidiasDoUsuario(email);
 
+	    Map<String, Object> response = new HashMap<>();
+	    response.put("usuario", email);
+	    response.put("totalMidias", total);
 
+	    return ResponseEntity.ok(response);
+	}
 }

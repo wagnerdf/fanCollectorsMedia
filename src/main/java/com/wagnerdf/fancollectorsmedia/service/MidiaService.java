@@ -235,5 +235,8 @@ public class MidiaService {
 	    // Chama o repository equivalente sem Pageable
 	    return midiaRepository.findByTiposAndUsuarioSemPaginacao(email, null);
 	}
-
+	
+	public long contarMidiasDoUsuario(String email) {
+	    return midiaRepository.countByCadastroEmail(email);
+	}
 }

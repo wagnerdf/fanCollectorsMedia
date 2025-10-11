@@ -65,5 +65,8 @@ public interface MidiaRepository extends JpaRepository<Midia, Long> {
 			+ "ORDER BY m.tituloAlternativo ASC")
 	List<MidiaListagemDto> findByTiposAndUsuarioSemPaginacao(@Param("email") String email,
 			@Param("tipos") List<String> tipos);
+	
+	// Conta o total de mídias de um usuário pelo email
+	long countByCadastroEmail(String email);
 
 }
