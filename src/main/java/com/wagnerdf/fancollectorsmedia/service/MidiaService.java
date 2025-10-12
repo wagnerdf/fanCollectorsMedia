@@ -1,6 +1,8 @@
 package com.wagnerdf.fancollectorsmedia.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -239,4 +241,29 @@ public class MidiaService {
 	public long contarMidiasDoUsuario(String email) {
 	    return midiaRepository.countByCadastroEmail(email);
 	}
+	
+	public Map<String, Object> listarMidiasPorCadastro(Long cadastroId, int offset, int limit) {
+	    List<Object[]> resultados = midiaRepository.findMidiasListagemByCadastro(cadastroId, limit, offset);
+	    long total = midiaRepository.countMidiasByCadastro(cadastroId);
+
+	    boolean hasMore = offset + limit < total;
+
+	    List<MidiaListagemDto> midias = resultados.stream()
+	        .map(r -> new MidiaListagemDto(
+	                ((Number) r[0]).longValue(), // id
+	                (String) r[1],              // capaUrl
+	                (String) r[2],              // midiaTipoNome
+	                (String) r[3],              // generos
+	                (String) r[4]               // tituloAlternativo
+	        ))
+	        .toList();
+
+	    Map<String, Object> response = new HashMap<>();
+	    response.put("midias", midias);
+	    response.put("hasMore", hasMore);
+	    response.put("total", total);
+
+	    return response;
+	}
+
 }

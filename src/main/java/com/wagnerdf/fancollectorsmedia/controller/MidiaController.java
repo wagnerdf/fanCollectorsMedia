@@ -29,6 +29,7 @@ import com.wagnerdf.fancollectorsmedia.dto.MidiaCamposLivresDto;
 import com.wagnerdf.fancollectorsmedia.dto.MidiaListagemDto;
 import com.wagnerdf.fancollectorsmedia.dto.MidiaRequestDto;
 import com.wagnerdf.fancollectorsmedia.dto.MidiaResponseDto;
+import com.wagnerdf.fancollectorsmedia.model.Midia;
 import com.wagnerdf.fancollectorsmedia.model.MidiaTipo;
 import com.wagnerdf.fancollectorsmedia.service.MidiaService;
 import com.wagnerdf.fancollectorsmedia.service.MidiaTipoService;
@@ -192,4 +193,14 @@ public class MidiaController {
 
 	    return ResponseEntity.ok(response);
 	}
+	
+	@GetMapping("/cadastro/{id}")
+    public ResponseEntity<Map<String, Object>> listarMidiasPorCadastro(
+            @PathVariable Long id,
+            @RequestParam(defaultValue = "0") int offset,
+            @RequestParam(defaultValue = "50") int limit) {
+
+        Map<String, Object> resultado = midiaService.listarMidiasPorCadastro(id, offset, limit);
+        return ResponseEntity.ok(resultado);
+    }
 }

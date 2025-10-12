@@ -68,5 +68,26 @@ public interface MidiaRepository extends JpaRepository<Midia, Long> {
 	
 	// Conta o total de mídias de um usuário pelo email
 	long countByCadastroEmail(String email);
+	
+	@Query(value = """
+	        SELECT 
+	            m.id,
+	            m.capa_url,
+	            m.midia_tipo_nome,
+	            m.generos,
+	            m.titulo_alternativo
+	        FROM midia m
+	        WHERE m.cadastro_id = :cadastroId
+	        ORDER BY m.id DESC
+	        LIMIT :limit OFFSET :offset
+	    """, nativeQuery = true)
+	    List<Object[]> findMidiasListagemByCadastro(
+	            @Param("cadastroId") Long cadastroId,
+	            @Param("limit") int limit,
+	            @Param("offset") int offset
+	    );
+
+	    @Query(value = "SELECT COUNT(*) FROM midia WHERE cadastro_id = :cadastroId", nativeQuery = true)
+	    long countMidiasByCadastro(@Param("cadastroId") Long cadastroId);
 
 }
