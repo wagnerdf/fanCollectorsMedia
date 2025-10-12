@@ -242,28 +242,32 @@ public class MidiaService {
 	    return midiaRepository.countByCadastroEmail(email);
 	}
 	
-	public Map<String, Object> listarMidiasPorCadastro(Long cadastroId, int offset, int limit) {
-	    List<Object[]> resultados = midiaRepository.findMidiasListagemByCadastro(cadastroId, limit, offset);
-	    long total = midiaRepository.countMidiasByCadastro(cadastroId);
+	public Map<String, Object> listarMidiasDoUsuario(String email, int offset, int limit) {
+	    Cadastro cadastro = cadastroService.buscarPorEmail(email);
+
+	    List<Object[]> resultados = midiaRepository.findMidiasListagemByCadastro(cadastro.getId(), limit, offset);
+	    long total = midiaRepository.countMidiasByCadastro(cadastro.getId());
 
 	    boolean hasMore = offset + limit < total;
 
 	    List<MidiaListagemDto> midias = resultados.stream()
-	        .map(r -> new MidiaListagemDto(
-	                ((Number) r[0]).longValue(), // id
-	                (String) r[1],              // capaUrl
-	                (String) r[2],              // midiaTipoNome
-	                (String) r[3],              // generos
-	                (String) r[4]               // tituloAlternativo
-	        ))
-	        .toList();
+	            .map(r -> new MidiaListagemDto(
+	                    ((Number) r[0]).longValue(),
+	                    (String) r[1],
+	                    (String) r[2],
+	                    (String) r[3],
+	                    (String) r[4]
+	            ))
+	            .toList();
 
 	    Map<String, Object> response = new HashMap<>();
+	    response.put("total", total);
 	    response.put("midias", midias);
 	    response.put("hasMore", hasMore);
-	    response.put("total", total);
 
 	    return response;
 	}
+
+
 
 }

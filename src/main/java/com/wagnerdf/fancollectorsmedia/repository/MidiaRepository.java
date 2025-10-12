@@ -81,11 +81,11 @@ public interface MidiaRepository extends JpaRepository<Midia, Long> {
 	        ORDER BY m.id DESC
 	        LIMIT :limit OFFSET :offset
 	    """, nativeQuery = true)
-	    List<Object[]> findMidiasListagemByCadastro(
-	            @Param("cadastroId") Long cadastroId,
-	            @Param("limit") int limit,
-	            @Param("offset") int offset
-	    );
+	List<Object[]> findMidiasListagemByCadastro(
+	        @Param("cadastroId") Long cadastroId,
+	        @Param("limit") int limit,
+	        @Param("offset") int offset
+	);
 
 	    @Query(value = "SELECT COUNT(*) FROM midia WHERE cadastro_id = :cadastroId", nativeQuery = true)
 	    long countMidiasByCadastro(@Param("cadastroId") Long cadastroId);
