@@ -78,7 +78,7 @@ public interface MidiaRepository extends JpaRepository<Midia, Long> {
 	            m.titulo_alternativo
 	        FROM midia m
 	        WHERE m.cadastro_id = :cadastroId
-	        ORDER BY m.id DESC
+	        ORDER BY m.titulo_alternativo ASC
 	        LIMIT :limit OFFSET :offset
 	    """, nativeQuery = true)
 	List<Object[]> findMidiasListagemByCadastro(
