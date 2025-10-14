@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.wagnerdf.fancollectorsmedia.dto.MidiaCamposLivresDto;
 import com.wagnerdf.fancollectorsmedia.dto.MidiaListagemDto;
+import com.wagnerdf.fancollectorsmedia.dto.MidiaListagemMobileDto;
 import com.wagnerdf.fancollectorsmedia.dto.MidiaRequestDto;
 import com.wagnerdf.fancollectorsmedia.dto.MidiaResponseDto;
 import com.wagnerdf.fancollectorsmedia.model.Cadastro;
@@ -168,8 +169,8 @@ public class MidiaService {
 	}
 
 	public Page<MidiaListagemDto> listarMidiasPaginadas(String email, Pageable pageable) {
-        return midiaRepository.findByCadastroEmailDto(email, pageable);
-    }
+		return midiaRepository.findByCadastroEmailDto(email, pageable);
+	}
 
 	// Lista mídias paginadas de um usuário
 	public Page<MidiaListagemDto> listarMidiasDoUsuarioPaginadas(String username, Pageable pageable) {
@@ -218,7 +219,7 @@ public class MidiaService {
 		});
 	}
 
-	//versões com paginação de midias do usuario e tipoMidia
+	// versões com paginação de midias do usuario e tipoMidia
 	public Page<MidiaListagemDto> listarPorTiposDoUsuario(String email, List<String> tipos, Pageable pageable) {
 		return midiaRepository.findByTiposAndUsuario(email, tipos, pageable);
 	}
@@ -226,48 +227,41 @@ public class MidiaService {
 	public Page<MidiaListagemDto> listarTodosDoUsuario(String email, Pageable pageable) {
 		return midiaRepository.findByTiposAndUsuario(email, null, pageable);
 	}
-	
-	//versões sem paginação de midias do usuario e tipoMidia
+
+	// versões sem paginação de midias do usuario e tipoMidia
 	public List<MidiaListagemDto> listarPorTiposDoUsuarioSemPaginacao(String email, List<String> tipos) {
-	    // Chama o repository equivalente sem Pageable
-	    return midiaRepository.findByTiposAndUsuarioSemPaginacao(email, tipos);
+		// Chama o repository equivalente sem Pageable
+		return midiaRepository.findByTiposAndUsuarioSemPaginacao(email, tipos);
 	}
 
 	public List<MidiaListagemDto> listarTodosDoUsuarioSemPaginacao(String email) {
-	    // Chama o repository equivalente sem Pageable
-	    return midiaRepository.findByTiposAndUsuarioSemPaginacao(email, null);
+		// Chama o repository equivalente sem Pageable
+		return midiaRepository.findByTiposAndUsuarioSemPaginacao(email, null);
 	}
-	
+
 	public long contarMidiasDoUsuario(String email) {
-	    return midiaRepository.countByCadastroEmail(email);
+		return midiaRepository.countByCadastroEmail(email);
 	}
-	
+
 	public Map<String, Object> listarMidiasDoUsuario(String email, int offset, int limit) {
-	    Cadastro cadastro = cadastroService.buscarPorEmail(email);
+		Cadastro cadastro = cadastroService.buscarPorEmail(email);
 
-	    List<Object[]> resultados = midiaRepository.findMidiasListagemByCadastro(cadastro.getId(), limit, offset);
-	    long total = midiaRepository.countMidiasByCadastro(cadastro.getId());
+		List<Object[]> resultados = midiaRepository.findMidiasListagemByCadastro(cadastro.getId(), limit, offset);
+		long total = midiaRepository.countMidiasByCadastro(cadastro.getId());
 
-	    boolean hasMore = offset + limit < total;
+		boolean hasMore = offset + limit < total;
 
-	    List<MidiaListagemDto> midias = resultados.stream()
-	            .map(r -> new MidiaListagemDto(
-	                    ((Number) r[0]).longValue(),
-	                    (String) r[1],
-	                    (String) r[2],
-	                    (String) r[3],
-	                    (String) r[4]
-	            ))
-	            .toList();
+		List<MidiaListagemMobileDto> midias = resultados.stream()
+				.map(r -> new MidiaListagemMobileDto(((Number) r[0]).longValue(), (String) r[1], (String) r[2],
+						(String) r[3], (String) r[4], r[5] != null ? ((Number) r[5]).doubleValue() : null))
+				.toList();
 
-	    Map<String, Object> response = new HashMap<>();
-	    response.put("total", total);
-	    response.put("midias", midias);
-	    response.put("hasMore", hasMore);
+		Map<String, Object> response = new HashMap<>();
+		response.put("total", total);
+		response.put("midias", midias);
+		response.put("hasMore", hasMore);
 
-	    return response;
+		return response;
 	}
-
-
 
 }

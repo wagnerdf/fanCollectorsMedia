@@ -160,47 +160,43 @@ public class MidiaController {
 
 		return ResponseEntity.ok(response);
 	}
-	
+
 	// Lista todas as midias do usuário por tipo de midia sem páginação
 	@GetMapping("/tipos-nomes-lista")
-	public ResponseEntity<?> listarMidiasPorTiposSemPaginacao(
-	        Authentication authentication,
-	        @RequestParam(required = false) List<String> tipos,
-	        @RequestParam(required = false) Boolean all) {
+	public ResponseEntity<?> listarMidiasPorTiposSemPaginacao(Authentication authentication,
+			@RequestParam(required = false) List<String> tipos, @RequestParam(required = false) Boolean all) {
 
-	    String email = authentication.getName();
-	    List<MidiaListagemDto> lista;
+		String email = authentication.getName();
+		List<MidiaListagemDto> lista;
 
-	    if (Boolean.TRUE.equals(all) || tipos == null || tipos.isEmpty()) {
-	        lista = midiaService.listarTodosDoUsuarioSemPaginacao(email);
-	    } else {
-	        lista = midiaService.listarPorTiposDoUsuarioSemPaginacao(email, tipos);
-	    }
+		if (Boolean.TRUE.equals(all) || tipos == null || tipos.isEmpty()) {
+			lista = midiaService.listarTodosDoUsuarioSemPaginacao(email);
+		} else {
+			lista = midiaService.listarPorTiposDoUsuarioSemPaginacao(email, tipos);
+		}
 
-	    // Retornar direto a lista como JSON
-	    return ResponseEntity.ok(lista);
+		// Retornar direto a lista como JSON
+		return ResponseEntity.ok(lista);
 	}
-	
+
 	// Retorna o total de mídias do usuário logado
 	@GetMapping("/usuario/total")
 	public ResponseEntity<Map<String, Object>> totalMidiasDoUsuario(@AuthenticationPrincipal UserDetails userDetails) {
-	    String email = userDetails.getUsername();
-	    long total = midiaService.contarMidiasDoUsuario(email);
+		String email = userDetails.getUsername();
+		long total = midiaService.contarMidiasDoUsuario(email);
 
-	    Map<String, Object> response = new HashMap<>();
-	    response.put("usuario", email);
-	    response.put("totalMidias", total);
+		Map<String, Object> response = new HashMap<>();
+		response.put("usuario", email);
+		response.put("totalMidias", total);
 
-	    return ResponseEntity.ok(response);
+		return ResponseEntity.ok(response);
 	}
-	
-	@GetMapping("/minhas")
-	public ResponseEntity<Map<String, Object>> listarMinhasMidias(
-	        @RequestParam(defaultValue = "0") int offset,
-	        @RequestParam(defaultValue = "10") int limit,
-	        Authentication authentication) {
 
-	    String email = authentication.getName();
-	    return ResponseEntity.ok(midiaService.listarMidiasDoUsuario(email, offset, limit));
+	@GetMapping("/minhas")
+	public ResponseEntity<Map<String, Object>> listarMinhasMidias(@RequestParam(defaultValue = "0") int offset,
+			@RequestParam(defaultValue = "10") int limit, Authentication authentication) {
+
+		String email = authentication.getName();
+		return ResponseEntity.ok(midiaService.listarMidiasDoUsuario(email, offset, limit));
 	}
 }
