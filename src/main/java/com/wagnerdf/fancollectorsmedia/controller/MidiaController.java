@@ -30,7 +30,10 @@ import com.wagnerdf.fancollectorsmedia.dto.MidiaListagemDto;
 import com.wagnerdf.fancollectorsmedia.dto.MidiaRequestDto;
 import com.wagnerdf.fancollectorsmedia.dto.MidiaResponseDto;
 import com.wagnerdf.fancollectorsmedia.model.Cadastro;
+import com.wagnerdf.fancollectorsmedia.model.Midia;
 import com.wagnerdf.fancollectorsmedia.model.MidiaTipo;
+import com.wagnerdf.fancollectorsmedia.repository.MidiaRepository;
+import com.wagnerdf.fancollectorsmedia.service.CadastroService;
 import com.wagnerdf.fancollectorsmedia.service.MidiaService;
 import com.wagnerdf.fancollectorsmedia.service.MidiaTipoService;
 
@@ -43,6 +46,12 @@ public class MidiaController {
 
 	@Autowired
 	private MidiaTipoService midiaTipoService;
+	
+	@Autowired
+	private CadastroService cadastroService;
+	
+	@Autowired
+	private MidiaRepository midiaRepository;
 
 	public MidiaController(MidiaService midiaService) {
 		this.midiaService = midiaService;
@@ -199,4 +208,42 @@ public class MidiaController {
 		String email = authentication.getName();
 		return ResponseEntity.ok(midiaService.listarMidiasDoUsuario(email, offset, limit));
 	}
+	
+	@GetMapping("/generos")
+	public ResponseEntity<Map<String, Long>> listarGeneros(Authentication authentication) {
+	    // Pega o e-mail do usuário logado via Spring Security
+	    String email = authentication.getName();
+
+	    // Busca o cadastro do usuário pelo email
+	    Cadastro cadastro = cadastroService.buscarPorEmail(email);
+
+	    // Busca todas as mídias do usuário
+	    List<Midia> midias = midiaRepository.findByCadastro(cadastro);
+
+	    Map<String, Long> contagemGeneros = new HashMap<>();
+
+	    for (Midia midia : midias) {
+	        if (midia.getGeneros() != null && !midia.getGeneros().isEmpty()) {
+
+	            String generosRaw = midia.getGeneros();
+
+	            // Substitui conectivos por vírgula para facilitar split
+	            String[] generos = generosRaw
+	                    .replace("&", ",")
+	                    .replace(" e ", ",")
+	                    .split(",");
+
+	            for (String genero : generos) {
+	                String g = genero.trim();
+	                if (!g.isEmpty()) {
+	                    contagemGeneros.put(g, contagemGeneros.getOrDefault(g, 0L) + 1);
+	                }
+	            }
+	        }
+	    }
+
+	    return ResponseEntity.ok(contagemGeneros);
+	}
+
+
 }
