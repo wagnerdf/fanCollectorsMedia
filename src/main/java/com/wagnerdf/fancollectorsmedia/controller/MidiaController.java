@@ -1,8 +1,10 @@
 package com.wagnerdf.fancollectorsmedia.controller;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -211,28 +213,18 @@ public class MidiaController {
 	
 	@GetMapping("/generos")
 	public ResponseEntity<Map<String, Long>> listarGeneros(Authentication authentication) {
-	    // Pega o e-mail do usuário logado via Spring Security
 	    String email = authentication.getName();
-
-	    // Busca o cadastro do usuário pelo email
 	    Cadastro cadastro = cadastroService.buscarPorEmail(email);
-
-	    // Busca todas as mídias do usuário
 	    List<Midia> midias = midiaRepository.findByCadastro(cadastro);
 
 	    Map<String, Long> contagemGeneros = new HashMap<>();
 
 	    for (Midia midia : midias) {
 	        if (midia.getGeneros() != null && !midia.getGeneros().isEmpty()) {
-
-	            String generosRaw = midia.getGeneros();
-
-	            // Substitui conectivos por vírgula para facilitar split
-	            String[] generos = generosRaw
+	            String[] generos = midia.getGeneros()
 	                    .replace("&", ",")
 	                    .replace(" e ", ",")
 	                    .split(",");
-
 	            for (String genero : generos) {
 	                String g = genero.trim();
 	                if (!g.isEmpty()) {
@@ -242,8 +234,17 @@ public class MidiaController {
 	        }
 	    }
 
-	    return ResponseEntity.ok(contagemGeneros);
-	}
+	    // 🔹 Ordena alfabeticamente antes de retornar
+	    Map<String, Long> contagemGenerosOrdenada = contagemGeneros.entrySet().stream()
+	            .sorted(Map.Entry.comparingByKey()) // ordena pela chave (nome do gênero)
+	            .collect(Collectors.toMap(
+	                    Map.Entry::getKey,
+	                    Map.Entry::getValue,
+	                    (oldValue, newValue) -> oldValue,
+	                    LinkedHashMap::new // mantém a ordem
+	            ));
 
+	    return ResponseEntity.ok(contagemGenerosOrdenada);
+	}
 
 }
