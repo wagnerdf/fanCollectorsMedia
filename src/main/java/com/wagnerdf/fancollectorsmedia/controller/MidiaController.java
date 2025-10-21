@@ -1,7 +1,6 @@
 package com.wagnerdf.fancollectorsmedia.controller;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -28,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wagnerdf.fancollectorsmedia.dto.MidiaCamposLivresDto;
+import com.wagnerdf.fancollectorsmedia.dto.MidiaGeneroComTotalDto;
 import com.wagnerdf.fancollectorsmedia.dto.MidiaListagemDto;
 import com.wagnerdf.fancollectorsmedia.dto.MidiaRequestDto;
 import com.wagnerdf.fancollectorsmedia.dto.MidiaResponseDto;
@@ -217,40 +217,46 @@ public class MidiaController {
 	}
 
 	@GetMapping("/generos")
-	public ResponseEntity<Map<String, Long>> listarGeneros(Authentication authentication) {
+	public ResponseEntity<List<MidiaGeneroComTotalDto>> listarGeneros(Authentication authentication) {
 
-		// Pega o e-mail do usuário logado via Spring Security
-		String email = authentication.getName();
+	    // 🔹 Pega o e-mail do usuário logado via Spring Security
+	    String email = authentication.getName();
 
-		// Busca o cadastro do usuário pelo email
-		Cadastro cadastro = cadastroService.buscarPorEmail(email);
+	    // 🔹 Busca o cadastro do usuário pelo email
+	    Cadastro cadastro = cadastroService.buscarPorEmail(email);
 
-		// Busca todas as mídias do usuário
-		List<Midia> midias = midiaRepository.findByCadastro(cadastro);
+	    // 🔹 Busca todas as mídias do usuário
+	    List<Midia> midias = midiaRepository.findByCadastro(cadastro);
 
-		Map<String, Long> contagemGeneros = new HashMap<>();
+	    // 🔹 Mapa para armazenar o nome do gênero e sua contagem
+	    Map<String, Long> contagemGeneros = new HashMap<>();
 
-		for (Midia midia : midias) {
-			if (midia.getGeneros() != null && !midia.getGeneros().isEmpty()) {
-				// Substitui conectivos por vírgula para facilitar split
-				String[] generos = midia.getGeneros().replace("&", ",").replace(" e ", ",").split(",");
-				for (String genero : generos) {
-					String g = genero.trim();
-					if (!g.isEmpty()) {
-						contagemGeneros.put(g, contagemGeneros.getOrDefault(g, 0L) + 1);
-					}
-				}
-			}
-		}
+	    // 🔹 Percorre as mídias do usuário
+	    for (Midia midia : midias) {
+	        if (midia.getGeneros() != null && !midia.getGeneros().isEmpty()) {
+	            // Substitui conectivos e separa múltiplos gêneros
+	            String[] generos = midia.getGeneros()
+	                    .replace("&", ",")
+	                    .replace(" e ", ",")
+	                    .split(",");
 
-		// 🔹 Ordena alfabeticamente antes de retornar
-		Map<String, Long> contagemGenerosOrdenada = contagemGeneros.entrySet().stream()
-				.sorted(Map.Entry.comparingByKey()) // ordena pela chave (nome do gênero)
-				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue,
-						LinkedHashMap::new // mantém a ordem
-				));
+	            for (String genero : generos) {
+	                String g = genero.trim();
+	                if (!g.isEmpty()) {
+	                    contagemGeneros.put(g, contagemGeneros.getOrDefault(g, 0L) + 1);
+	                }
+	            }
+	        }
+	    }
 
-		return ResponseEntity.ok(contagemGenerosOrdenada);
+	    // 🔹 Converte o mapa em uma lista de DTOs ordenada alfabeticamente
+	    List<MidiaGeneroComTotalDto> generosDto = contagemGeneros.entrySet().stream()
+	            .sorted(Map.Entry.comparingByKey()) // ordena pelo nome do gênero
+	            .map(entry -> new MidiaGeneroComTotalDto(entry.getKey(), entry.getValue()))
+	            .collect(Collectors.toList());
+
+	    // 🔹 Retorna a lista no formato JSON
+	    return ResponseEntity.ok(generosDto);
 	}
 
 	@GetMapping("/tipos")
