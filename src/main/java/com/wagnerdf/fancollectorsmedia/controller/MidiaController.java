@@ -260,16 +260,20 @@ public class MidiaController {
 	}
 
 	@GetMapping("/tipos")
-	public ResponseEntity<Map<String, Long>> listarTiposMidia(Authentication authentication) {
-		String email = authentication.getName();
-		Cadastro cadastro = cadastroService.buscarPorEmail(email);
+	public ResponseEntity<List<MidiaTipoComTotalDto>> listarTiposMidia(Authentication authentication) {
 
-		List<MidiaTipoComTotalDto> resultados = midiaTipoRepository.countMidiasByTipo(cadastro);
+	    // 🔹 Pega o e-mail do usuário logado via Spring Security
+	    String email = authentication.getName();
 
-		Map<String, Long> tiposMidia = resultados.stream()
-				.collect(Collectors.toMap(MidiaTipoComTotalDto::getTipo, MidiaTipoComTotalDto::getTotal));
+	    // 🔹 Busca o cadastro do usuário pelo email
+	    Cadastro cadastro = cadastroService.buscarPorEmail(email);
 
-		return ResponseEntity.ok(tiposMidia);
+	    // 🔹 Busca os tipos de mídia com total (usando o DTO diretamente do repository)
+	    List<MidiaTipoComTotalDto> resultados = midiaTipoRepository.countMidiasByTipo(cadastro);
+
+	    // 🔹 Retorna a lista de DTOs diretamente
+	    return ResponseEntity.ok(resultados);
 	}
+
 
 }
