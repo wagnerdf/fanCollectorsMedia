@@ -31,6 +31,7 @@ import com.wagnerdf.fancollectorsmedia.dto.MidiaCamposLivresDto;
 import com.wagnerdf.fancollectorsmedia.dto.MidiaListagemDto;
 import com.wagnerdf.fancollectorsmedia.dto.MidiaRequestDto;
 import com.wagnerdf.fancollectorsmedia.dto.MidiaResponseDto;
+import com.wagnerdf.fancollectorsmedia.dto.MidiaTipoComTotalDto;
 import com.wagnerdf.fancollectorsmedia.model.Cadastro;
 import com.wagnerdf.fancollectorsmedia.model.Midia;
 import com.wagnerdf.fancollectorsmedia.model.MidiaTipo;
@@ -46,7 +47,7 @@ public class MidiaController {
 
 	@Autowired
 	private MidiaService midiaService;
-	
+
 	@Autowired
 	private MidiaTipoRepository midiaTipoRepository;
 
@@ -254,25 +255,15 @@ public class MidiaController {
 
 	@GetMapping("/tipos")
 	public ResponseEntity<Map<String, Long>> listarTiposMidia(Authentication authentication) {
+		String email = authentication.getName();
+		Cadastro cadastro = cadastroService.buscarPorEmail(email);
 
-	    // Pega o e-mail do usuário logado via Spring Security
-	    String email = authentication.getName();
-	    
-	    // Busca o cadastro do usuário pelo email
-	    Cadastro cadastro = cadastroService.buscarPorEmail(email);
-	    
-	    // Busca todos os tipos de mídias do usuário
-	    List<Object[]> resultados = midiaTipoRepository.countMidiasByTipo(cadastro);
+		List<MidiaTipoComTotalDto> resultados = midiaTipoRepository.countMidiasByTipo(cadastro);
 
-	    // Transforma List<Object[]> em Map<String, Long>
-	    Map<String, Long> tiposMidia = resultados.stream()
-	        .collect(Collectors.toMap(
-	            obj -> (String) obj[0],  // nome do tipo de mídia
-	            obj -> (Long) obj[1]     // total de mídias
-	        ));
+		Map<String, Long> tiposMidia = resultados.stream()
+				.collect(Collectors.toMap(MidiaTipoComTotalDto::getTipo, MidiaTipoComTotalDto::getTotal));
 
-	    // Retorna o mapa como JSON
-	    return ResponseEntity.ok(tiposMidia);
+		return ResponseEntity.ok(tiposMidia);
 	}
 
 }
