@@ -35,6 +35,7 @@ import com.wagnerdf.fancollectorsmedia.model.Cadastro;
 import com.wagnerdf.fancollectorsmedia.model.Midia;
 import com.wagnerdf.fancollectorsmedia.model.MidiaTipo;
 import com.wagnerdf.fancollectorsmedia.repository.MidiaRepository;
+import com.wagnerdf.fancollectorsmedia.repository.MidiaTipoRepository;
 import com.wagnerdf.fancollectorsmedia.service.CadastroService;
 import com.wagnerdf.fancollectorsmedia.service.MidiaService;
 import com.wagnerdf.fancollectorsmedia.service.MidiaTipoService;
@@ -45,13 +46,16 @@ public class MidiaController {
 
 	@Autowired
 	private MidiaService midiaService;
+	
+	@Autowired
+	private MidiaTipoRepository midiaTipoRepository;
 
 	@Autowired
 	private MidiaTipoService midiaTipoService;
-	
+
 	@Autowired
 	private CadastroService cadastroService;
-	
+
 	@Autowired
 	private MidiaRepository midiaRepository;
 
@@ -210,41 +214,65 @@ public class MidiaController {
 		String email = authentication.getName();
 		return ResponseEntity.ok(midiaService.listarMidiasDoUsuario(email, offset, limit));
 	}
-	
+
 	@GetMapping("/generos")
 	public ResponseEntity<Map<String, Long>> listarGeneros(Authentication authentication) {
+
+		// Pega o e-mail do usuário logado via Spring Security
+		String email = authentication.getName();
+
+		// Busca o cadastro do usuário pelo email
+		Cadastro cadastro = cadastroService.buscarPorEmail(email);
+
+		// Busca todas as mídias do usuário
+		List<Midia> midias = midiaRepository.findByCadastro(cadastro);
+
+		Map<String, Long> contagemGeneros = new HashMap<>();
+
+		for (Midia midia : midias) {
+			if (midia.getGeneros() != null && !midia.getGeneros().isEmpty()) {
+				// Substitui conectivos por vírgula para facilitar split
+				String[] generos = midia.getGeneros().replace("&", ",").replace(" e ", ",").split(",");
+				for (String genero : generos) {
+					String g = genero.trim();
+					if (!g.isEmpty()) {
+						contagemGeneros.put(g, contagemGeneros.getOrDefault(g, 0L) + 1);
+					}
+				}
+			}
+		}
+
+		// 🔹 Ordena alfabeticamente antes de retornar
+		Map<String, Long> contagemGenerosOrdenada = contagemGeneros.entrySet().stream()
+				.sorted(Map.Entry.comparingByKey()) // ordena pela chave (nome do gênero)
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue,
+						LinkedHashMap::new // mantém a ordem
+				));
+
+		return ResponseEntity.ok(contagemGenerosOrdenada);
+	}
+
+	@GetMapping("/tipos")
+	public ResponseEntity<Map<String, Long>> listarTiposMidia(Authentication authentication) {
+
+	    // Pega o e-mail do usuário logado via Spring Security
 	    String email = authentication.getName();
+	    
+	    // Busca o cadastro do usuário pelo email
 	    Cadastro cadastro = cadastroService.buscarPorEmail(email);
-	    List<Midia> midias = midiaRepository.findByCadastro(cadastro);
+	    
+	    // Busca todos os tipos de mídias do usuário
+	    List<Object[]> resultados = midiaTipoRepository.countMidiasByTipo(cadastro);
 
-	    Map<String, Long> contagemGeneros = new HashMap<>();
+	    // Transforma List<Object[]> em Map<String, Long>
+	    Map<String, Long> tiposMidia = resultados.stream()
+	        .collect(Collectors.toMap(
+	            obj -> (String) obj[0],  // nome do tipo de mídia
+	            obj -> (Long) obj[1]     // total de mídias
+	        ));
 
-	    for (Midia midia : midias) {
-	        if (midia.getGeneros() != null && !midia.getGeneros().isEmpty()) {
-	            String[] generos = midia.getGeneros()
-	                    .replace("&", ",")
-	                    .replace(" e ", ",")
-	                    .split(",");
-	            for (String genero : generos) {
-	                String g = genero.trim();
-	                if (!g.isEmpty()) {
-	                    contagemGeneros.put(g, contagemGeneros.getOrDefault(g, 0L) + 1);
-	                }
-	            }
-	        }
-	    }
-
-	    // 🔹 Ordena alfabeticamente antes de retornar
-	    Map<String, Long> contagemGenerosOrdenada = contagemGeneros.entrySet().stream()
-	            .sorted(Map.Entry.comparingByKey()) // ordena pela chave (nome do gênero)
-	            .collect(Collectors.toMap(
-	                    Map.Entry::getKey,
-	                    Map.Entry::getValue,
-	                    (oldValue, newValue) -> oldValue,
-	                    LinkedHashMap::new // mantém a ordem
-	            ));
-
-	    return ResponseEntity.ok(contagemGenerosOrdenada);
+	    // Retorna o mapa como JSON
+	    return ResponseEntity.ok(tiposMidia);
 	}
 
 }
