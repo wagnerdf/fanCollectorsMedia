@@ -294,6 +294,25 @@ public class MidiaController {
 	    List<MidiaListagemMobileDto> midias = midiaService.buscarPorUsuarioEGeneroIgnoreCase(cadastro.getId(), nomeGenero);
 	    return ResponseEntity.ok(midias);
 	}
+	
+	/**
+     * Retorna as mídias do usuário logado filtradas pelo nome do gênero.
+     * Ex.: GET /midias/genero/Ação
+     */
+	@GetMapping("/tipo-midia/{tipoMidia}")
+	public ResponseEntity<List<MidiaListagemMobileDto>> listarPorTipoMidia(
+	        @PathVariable("tipoMidia") String tipoMidia, Authentication authentication) {
+
+	    String email = authentication.getName();
+	    Cadastro cadastro = cadastroService.buscarPorEmail(email);
+
+	    if (cadastro == null) {
+	        return ResponseEntity.status(401).build();
+	    }
+
+	    List<MidiaListagemMobileDto> midias = midiaService.buscarPorUsuarioETipoMidiaIgnoreCase(cadastro.getId(), tipoMidia);
+	    return ResponseEntity.ok(midias);
+	}
 
 
 }
