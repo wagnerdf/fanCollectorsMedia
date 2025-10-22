@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.wagnerdf.fancollectorsmedia.dto.MidiaCamposLivresDto;
 import com.wagnerdf.fancollectorsmedia.dto.MidiaGeneroComTotalDto;
 import com.wagnerdf.fancollectorsmedia.dto.MidiaListagemDto;
+import com.wagnerdf.fancollectorsmedia.dto.MidiaListagemMobileDto;
 import com.wagnerdf.fancollectorsmedia.dto.MidiaRequestDto;
 import com.wagnerdf.fancollectorsmedia.dto.MidiaResponseDto;
 import com.wagnerdf.fancollectorsmedia.dto.MidiaTipoComTotalDto;
@@ -273,6 +274,25 @@ public class MidiaController {
 
 	    // 🔹 Retorna a lista de DTOs diretamente
 	    return ResponseEntity.ok(resultados);
+	}
+
+	/**
+     * Retorna as mídias do usuário logado filtradas pelo nome do gênero.
+     * Ex.: GET /midias/genero/Ação
+     */
+	@GetMapping("/generos/{nomeGenero}")
+	public ResponseEntity<List<MidiaListagemMobileDto>> listarPorGenero(
+	        @PathVariable("nomeGenero") String nomeGenero, Authentication authentication) {
+
+	    String email = authentication.getName();
+	    Cadastro cadastro = cadastroService.buscarPorEmail(email);
+
+	    if (cadastro == null) {
+	        return ResponseEntity.status(401).build();
+	    }
+
+	    List<MidiaListagemMobileDto> midias = midiaService.buscarPorUsuarioEGeneroIgnoreCase(cadastro.getId(), nomeGenero);
+	    return ResponseEntity.ok(midias);
 	}
 
 

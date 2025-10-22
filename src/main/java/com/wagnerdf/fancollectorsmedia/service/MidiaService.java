@@ -263,5 +263,9 @@ public class MidiaService {
 
 		return response;
 	}
+	
+	public List<MidiaListagemMobileDto> buscarPorUsuarioEGeneroIgnoreCase(Long cadastroId, String nomeGenero) {
+        return midiaRepository.buscarPorUsuarioEGeneroIgnoreCase(cadastroId, nomeGenero);
+    }
 
 }
