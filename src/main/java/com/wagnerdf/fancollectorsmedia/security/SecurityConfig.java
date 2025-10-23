@@ -84,7 +84,8 @@ public class SecurityConfig {
         configuration.setAllowedOriginPatterns(List.of(
         	    "http://localhost:3000",
         	    "https://fan-collectors-frontend-app.vercel.app/",
-        	    "http://localhost:8081"
+        	    "http://localhost:8081",
+        	    "https://fancollectionmidia.netlify.app/"
         	));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
