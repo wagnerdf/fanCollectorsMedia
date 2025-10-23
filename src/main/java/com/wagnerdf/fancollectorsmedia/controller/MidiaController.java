@@ -281,8 +281,11 @@ public class MidiaController {
      * Ex.: GET /midias/genero/Ação
      */
 	@GetMapping("/generos/{nomeGenero}")
-	public ResponseEntity<List<MidiaListagemMobileDto>> listarPorGenero(
-	        @PathVariable("nomeGenero") String nomeGenero, Authentication authentication) {
+	public ResponseEntity<Map<String, Object>> listarPorGenero(
+	        @PathVariable("nomeGenero") String nomeGenero,
+	        @RequestParam(defaultValue = "0") int page,
+	        @RequestParam(defaultValue = "10") int size,
+	        Authentication authentication) {
 
 	    String email = authentication.getName();
 	    Cadastro cadastro = cadastroService.buscarPorEmail(email);
@@ -291,9 +294,19 @@ public class MidiaController {
 	        return ResponseEntity.status(401).build();
 	    }
 
-	    List<MidiaListagemMobileDto> midias = midiaService.buscarPorUsuarioEGeneroIgnoreCase(cadastro.getId(), nomeGenero);
-	    return ResponseEntity.ok(midias);
+	    Page<MidiaListagemMobileDto> midiasPage = midiaService.buscarPorUsuarioEGeneroIgnoreCase(
+	            cadastro.getId(), nomeGenero, page, size);
+
+	    Map<String, Object> response = new HashMap<>();
+	    response.put("content", midiasPage.getContent());
+	    response.put("currentPage", midiasPage.getNumber());
+	    response.put("totalItems", midiasPage.getTotalElements());
+	    response.put("totalPages", midiasPage.getTotalPages());
+	    response.put("hasMore", midiasPage.hasNext());
+
+	    return ResponseEntity.ok(response);
 	}
+
 	
 	/**
      * Retorna as mídias do usuário logado filtradas pelo nome do gênero.

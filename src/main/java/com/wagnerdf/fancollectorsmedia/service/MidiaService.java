@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -264,9 +265,16 @@ public class MidiaService {
 		return response;
 	}
 	
-	public List<MidiaListagemMobileDto> buscarPorUsuarioEGeneroIgnoreCase(Long cadastroId, String nomeGenero) {
-        return midiaRepository.buscarPorUsuarioEGeneroIgnoreCase(cadastroId, nomeGenero);
-    }
+	public Page<MidiaListagemMobileDto> buscarPorUsuarioEGeneroIgnoreCase(
+	        Long cadastroId, String nomeGenero, int page, int size) {
+
+	    Pageable pageable = PageRequest.of(
+	        Math.max(0, page), 
+	        Math.max(1, size)
+	    );
+
+	    return midiaRepository.buscarPorUsuarioEGeneroIgnoreCase(cadastroId, nomeGenero, pageable);
+	}
 	
 	public List<MidiaListagemMobileDto> buscarPorUsuarioETipoMidiaIgnoreCase(Long cadastroId, String tipoMidia) {
         return midiaRepository.buscarPorUsuarioETipoMidiaIgnoreCase(cadastroId, tipoMidia);

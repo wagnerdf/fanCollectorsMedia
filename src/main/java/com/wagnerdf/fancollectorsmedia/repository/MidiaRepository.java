@@ -91,13 +91,15 @@ public interface MidiaRepository extends JpaRepository<Midia, Long> {
 	
 	// Buscar mídias de um cadastro cujo campo "generos" contém o nome informado, retornando DTO
 	@Query("SELECT new com.wagnerdf.fancollectorsmedia.dto.MidiaListagemMobileDto("
-	       + "m.id, m.capaUrl, m.midiaTipo.nome, m.generos, m.tituloAlternativo, m.notaMedia) "
-	       + "FROM Midia m "
-	       + "WHERE m.cadastro.id = :cadastroId "
-	       + "AND LOWER(m.generos) LIKE LOWER(CONCAT('%', :nomeGenero, '%')) "
-	       + "ORDER BY m.tituloAlternativo ASC")
-	List<MidiaListagemMobileDto> buscarPorUsuarioEGeneroIgnoreCase(@Param("cadastroId") Long cadastroId,
-	                                                                @Param("nomeGenero") String nomeGenero);
+		       + "m.id, m.capaUrl, m.midiaTipo.nome, m.generos, m.tituloAlternativo, m.notaMedia) "
+		       + "FROM Midia m "
+		       + "WHERE m.cadastro.id = :cadastroId "
+		       + "AND LOWER(m.generos) LIKE LOWER(CONCAT('%', :nomeGenero, '%')) "
+		       + "ORDER BY m.tituloAlternativo ASC")
+		Page<MidiaListagemMobileDto> buscarPorUsuarioEGeneroIgnoreCase(
+		        @Param("cadastroId") Long cadastroId,
+		        @Param("nomeGenero") String nomeGenero,
+		        Pageable pageable);
 	
 	// Buscar mídias de um cadastro por tipo de midia, retornando DTO
 	@Query("SELECT new com.wagnerdf.fancollectorsmedia.dto.MidiaListagemMobileDto("
