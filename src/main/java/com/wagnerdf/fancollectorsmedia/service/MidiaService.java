@@ -276,8 +276,12 @@ public class MidiaService {
 	    return midiaRepository.buscarPorUsuarioEGeneroIgnoreCase(cadastroId, nomeGenero, pageable);
 	}
 	
-	public List<MidiaListagemMobileDto> buscarPorUsuarioETipoMidiaIgnoreCase(Long cadastroId, String tipoMidia) {
-        return midiaRepository.buscarPorUsuarioETipoMidiaIgnoreCase(cadastroId, tipoMidia);
-    }
+	public Page<MidiaListagemMobileDto> buscarPorUsuarioETipoMidiaIgnoreCase(
+	        Long cadastroId, String tipoMidia, int page, int size) {
+
+	    Pageable pageable = PageRequest.of(Math.max(0, page), Math.max(1, size));
+	    return midiaRepository.buscarPorUsuarioETipoMidiaIgnoreCase(cadastroId, tipoMidia, pageable);
+	}
+
 
 }

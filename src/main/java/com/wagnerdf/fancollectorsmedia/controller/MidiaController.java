@@ -313,8 +313,11 @@ public class MidiaController {
      * Ex.: GET /midias/genero/Ação
      */
 	@GetMapping("/tipo-midia/{tipoMidia}")
-	public ResponseEntity<List<MidiaListagemMobileDto>> listarPorTipoMidia(
-	        @PathVariable("tipoMidia") String tipoMidia, Authentication authentication) {
+	public ResponseEntity<Map<String, Object>> listarPorTipoMidia(
+	        @PathVariable("tipoMidia") String tipoMidia,
+	        @RequestParam(defaultValue = "0") int page,
+	        @RequestParam(defaultValue = "10") int size,
+	        Authentication authentication) {
 
 	    String email = authentication.getName();
 	    Cadastro cadastro = cadastroService.buscarPorEmail(email);
@@ -323,9 +326,19 @@ public class MidiaController {
 	        return ResponseEntity.status(401).build();
 	    }
 
-	    List<MidiaListagemMobileDto> midias = midiaService.buscarPorUsuarioETipoMidiaIgnoreCase(cadastro.getId(), tipoMidia);
-	    return ResponseEntity.ok(midias);
+	    Page<MidiaListagemMobileDto> midiasPage = midiaService.buscarPorUsuarioETipoMidiaIgnoreCase(
+	            cadastro.getId(), tipoMidia, page, size);
+
+	    Map<String, Object> response = new HashMap<>();
+	    response.put("content", midiasPage.getContent());
+	    response.put("currentPage", midiasPage.getNumber());
+	    response.put("totalItems", midiasPage.getTotalElements());
+	    response.put("totalPages", midiasPage.getTotalPages());
+	    response.put("hasMore", midiasPage.hasNext());
+
+	    return ResponseEntity.ok(response);
 	}
+
 
 
 }
