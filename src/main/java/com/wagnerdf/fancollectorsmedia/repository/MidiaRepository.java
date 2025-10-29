@@ -94,7 +94,10 @@ public interface MidiaRepository extends JpaRepository<Midia, Long> {
 		       + "m.id, m.capaUrl, m.midiaTipo.nome, m.generos, m.tituloAlternativo, m.notaMedia) "
 		       + "FROM Midia m "
 		       + "WHERE m.cadastro.id = :cadastroId "
-		       + "AND LOWER(m.generos) LIKE LOWER(CONCAT('%', :nomeGenero, '%')) "
+		       + "AND ( LOWER(REPLACE(m.generos, ' ', '')) = LOWER(REPLACE(:nomeGenero, ' ', '')) "
+		       + "      OR LOWER(REPLACE(m.generos, ' ', '')) LIKE LOWER(CONCAT(REPLACE(:nomeGenero, ' ', ''), ',%')) "
+		       + "      OR LOWER(REPLACE(m.generos, ' ', '')) LIKE LOWER(CONCAT('%,', REPLACE(:nomeGenero, ' ', ''), ',%')) "
+		       + "      OR LOWER(REPLACE(m.generos, ' ', '')) LIKE LOWER(CONCAT('%,', REPLACE(:nomeGenero, ' ', ''))) ) "
 		       + "ORDER BY m.tituloAlternativo ASC")
 		Page<MidiaListagemMobileDto> buscarPorUsuarioEGeneroIgnoreCase(
 		        @Param("cadastroId") Long cadastroId,
