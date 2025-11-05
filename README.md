@@ -5,14 +5,43 @@ Sistema para colecionadores de mídias físicas (Blu-ray, DVD, VHS, LP, CD, Cart
 
 ---
 
-## 🚀 Demonstração
+## 📱 Download do APK
+
+Baixe a versão mais recente do aplicativo **FanCollectionMidia** para Android:
+
+👉 [⬇️ FanCollectionMidia v1.0.0 (Preview)](https://drive.google.com/file/d/1GQ_9pI_UQdOjtb-5Nbh3dpR5V3_4LBhh/view?usp=sharing)
+
+👤 Usuário de Teste
+
+Para testar o aplicativo, utilize o seguinte usuário temporário:
+
+**Login:** `admin@admin`  
+**Senha:** `admin`
+
+> ⚠️ Este é um usuário de demonstração apenas para testes públicos.  
+> Algumas funções (como cadastro ou edição de usuário) ainda estão em desenvolvimento.
+
+
+**Informações da build:**
+- Versão: `1.0.0`
+- Tipo: `Preview (Release APK)`
+- Data de build: **05/11/2025**
+- Tamanho: ~91 MB
+- Compatibilidade: Android 7.0 (Nougat) ou superior
+- Status: ✅ Testado e funcional via EAS Build
+
+---
+
+## 🚀 Demonstração Web
 
 Você pode acessar a aplicação em produção pelo link abaixo:
 
 👉 [https://fan-collectors-frontend-app.vercel.app/](https://fan-collectors-frontend-app.vercel.app/)
 
-[![Deploy](https://img.shields.io/badge/🔗%20Deploy-Vercel-blue?style=flat&logo=vercel)](https://fan-collectors-frontend-app.vercel.app/)
+**Login:** `admin@admin`  
+**Senha:** `admin`
 
+[![Deploy](https://img.shields.io/badge/🔗%20Deploy-Vercel-blue?style=flat&logo=vercel)](https://fan-collectors-frontend-app.vercel.app/)
 
 ---
 
