@@ -16,21 +16,46 @@ Você pode acessar a aplicação em produção pelo link abaixo:
 
 ---
 
-## 🖥️ Layout web
+## 📱 Layout mobile
 
-<div align="center">
-  <img src="https://i.imgur.com/aZ7RXPZ.png" width="600" alt="Tela apresentação" />
-  <br/>
-  <img src="https://i.imgur.com/mJbJwTE.png" width="600" alt="Tela de Login" />
-  <br/>
-  <img src="https://i.imgur.com/F621Hxb.png" width="600" alt="Cadastro de Mídia" />
-</div>
+<p align="center">
+  <img src="https://i.imgur.com/uZTG6rh.jpeg" width="220" style="margin:10px;" />
+  <img src="https://i.imgur.com/Y9vGG3V.jpeg" width="220" style="margin:10px;" />
+</p>
+<p align="center">
+  <span style="color:#ff6b6b; font-size:18px;">🟢 Tela Inicial Usuário</span> 
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <span style="color:#4dabf7; font-size:18px;">🟣 Tela de Login</span>
+</p>
+
+<p align="center">
+  <img src="https://i.imgur.com/4H88Umu.jpeg" width="220" style="margin:10px;" />
+  <img src="https://i.imgur.com/FAFZoCk.jpeg" width="220" style="margin:10px;" />
+</p>
+<p align="center">
+  <span style="color:#51cf66; font-size:18px;">🔵 Tela de Biblioteca</span> 
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <span style="color:#ffd43b; font-size:18px;">🟠 Detalhes da Mídia</span>
+</p>
+
+<p align="center">
+  <img src="https://i.imgur.com/qEQceER.jpeg" width="220" style="margin:10px;" />
+</p>
+<p align="center">
+  <span style="color:#845ef7; font-size:18px;">🟡 Tela de Edição de Usuário</span>
+</p>
 
 ---
 
-## 📱 Layout mobile
+## 🖥️ Layout web
 
-Em breve
+<div align="center">
+  <img src="https://i.imgur.com/aZ7RXPZ.png" width="400" alt="Tela apresentação" />
+  <br/>
+  <img src="https://i.imgur.com/mJbJwTE.png" width="400" alt="Tela de Login" />
+  <br/>
+  <img src="https://i.imgur.com/F621Hxb.png" width="700" alt="Cadastro de Mídia" />
+</div>
 
 ---
 
@@ -51,18 +76,20 @@ Em breve
 - Spring Data JPA
 - Flyway (migrações de banco)
 - PostgreSQL
+- Railway
 - Maven
 - Lombok
 - Bean Validation
 - ModelMapper (ou MapStruct - futuro)
-- Integração com [TMDB API](https://www.themoviedb.org/documentation/api)
+- Integração com [TMDB API](https://www.themoviedb.org/documentation/api) e [NEWSDATA](https://newsdata.io/)
 
 ### 💻 Frontend (React + TypeScript)
 
-- React 18+
+- React 18+ / React Native
 - TypeScript
 - TailwindCSS
 - Axios
+- Expo
 - React Router DOM
 - Formulários com validação
 - Context API + Token JWT
@@ -76,14 +103,15 @@ Em breve
 - [x] Cadastro de mídias com dados preenchidos automaticamente via TMDB para Filmes e Series
 - [ ] Cadastro de mídias com dados preenchidos automaticamente MusicBrainz API para Musicas (em breve)
 - [ ] Cadastro de mídias com dados preenchidos automaticamente RAWG Video Games Database para Games (em breve)
-- [x] Upload de imagem de capa
+- [x] Notícias de entretenimento** (cinema, música e jogos) no sidebar, rotativas a cada 10 minutos.
+- [ ] Upload de imagem de capa
 - [x] Validação de campos obrigatórios
 - [x] Dashboard com exibição das mídias cadastradas
-- [ ] Filtro e busca por título (em breve)
-- [ ] Edição de titulo (em breve)
-- [ ] Exlusão de título (em breve)
+- [x] Filtro e busca por título 
+- [x] Edição de titulo 
+- [x] Exlusão de título
 - [ ] Postagens e publicação de midias dos usuários compartilhados (em breve)
-- [ ] Responsividade para mobile (em andamento)
+- [x] Responsividade para mobile
 
 ---
 
@@ -154,7 +182,7 @@ spring.jpa.hibernate.ddl-auto=validate
 
 | **Wagner Andrade (WagnerDf)** |
 </br>
-| Desenvolvedor Fullstack Java & React |
+| Desenvolvedor Fullstack Java/React/PHP.... |
 </br>
 | [LinkedIn](https://www.linkedin.com/in/wagner-andrade-876b6460) |
 </br> 
@@ -168,16 +196,16 @@ Contribuições são bem-vindas! Sinta-se à vontade para abrir uma _issue_, env
 
 ---
 
-## 🌐 API TMDB
+## 🌐 API: TMDB e NEWSDATA
 
-Este projeto usa a API pública do [TMDB](https://www.themoviedb.org/).  
-Você precisa gerar uma **chave de API** gratuita para usar os recursos de busca automática de filmes e séries.
+Este projeto usa a API pública do [TMDB](https://www.themoviedb.org/) e [NEWSDATA](https://newsdata.io/).  
+Você precisa gerar uma **chave de API** gratuita para usar os recursos de busca automática de filmes e séries e a da NewsData para receber noticias.
 
 ---
 
 ## 💡 Inspiração
 
-Este sistema foi idealizado para organizar coleções pessoais de mídia física com praticidade, visual moderno e dados completos.
+Criado especialmente para apaixonados por colecionar mídias físicas, este sistema oferece uma forma prática e moderna de catalogar, visualizar e gerenciar suas coleções com riqueza de detalhes.
 
 ---
 
