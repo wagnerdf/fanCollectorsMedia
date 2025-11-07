@@ -1,0 +1,8 @@
+tree 6591c2b5f6198c84417623ef5b6ce59af2e05383
+parent 843d872f21ac709687981fd20f99b5f75eff51ff
+author Wagner Andrade <Wagnerandrade_df@hotmail.com> 1755483334 -0300
+committer Wagner Andrade <Wagnerandrade_df@hotmail.com> 1755483334 -0300
+
+feat: gera mídias periódicas automaticamente para admin@admin
+- Scheduler responsável pela geração automática de mídias está
+desabilitado temporariamente para evitar problemas de datasource.
