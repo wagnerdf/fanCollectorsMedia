@@ -33,12 +33,14 @@ public class MidiaResponseDto {
     private String capaUrl;
     private Long midiaTipoId;
     private String midiaTipoNome;
+    private boolean assistido;
 
     public MidiaResponseDto(Long id, String tituloOriginal, String tituloAlternativo, String edicao, String colecao,
             String numeroSerie, String faixas, String classificacaoEtaria, String artistas, String diretores,
             String estudio, String formatoAudio, String formatoVideo, String observacoes, Integer quantidadeItens,
             Integer anoLancamento, String capaUrl, String sinopse, String generos, Integer duracao, String linguagem,
-            Double notaMedia, String formatoMidia, String temporada, Long midiaTipoId, String midiaTipoNome) {
+            Double notaMedia, String formatoMidia, String temporada, Long midiaTipoId, String midiaTipoNome,
+            boolean assistido) {
         this.id = id;
         this.tituloOriginal = tituloOriginal;
         this.tituloAlternativo = tituloAlternativo;
@@ -65,7 +67,7 @@ public class MidiaResponseDto {
         this.temporada = temporada;
         this.midiaTipoId = midiaTipoId;
         this.midiaTipoNome = midiaTipoNome;
+        this.assistido = assistido;
     }
 
 }
-

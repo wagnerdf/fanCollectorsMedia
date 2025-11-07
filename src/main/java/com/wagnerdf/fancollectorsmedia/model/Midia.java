@@ -81,6 +81,9 @@ public class Midia {
     
     @Column(name = "midia_tipo_nome") // mapeia a nova coluna
     private String midiaTipoNome;
+    
+    @Column(name = "assistido", nullable = false)
+    private boolean assistido = false;
 
 }
 

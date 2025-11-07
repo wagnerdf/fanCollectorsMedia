@@ -35,4 +35,5 @@ public class MidiaRequestDto {
     private String formatoMidia;
     private String temporada;
     private String midiaTipoNome;
+    private boolean assistido;
 }
