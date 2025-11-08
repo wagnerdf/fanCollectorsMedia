@@ -8,4 +8,5 @@ public class MidiaCamposLivresDto {
     private String temporada;
     private String midiaTipoNome;
     private Long midiaTipoId;
+    private Boolean assistido;
 }

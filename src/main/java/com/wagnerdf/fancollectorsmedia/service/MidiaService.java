@@ -207,6 +207,11 @@ public class MidiaService {
 			tipo.setId(dto.getMidiaTipoId());
 			midia.setMidiaTipo(tipo);
 		}
+		
+		// ✅ Novo campo: Assistido
+		if (dto.getAssistido() != null) {
+	        midia.setAssistido(dto.getAssistido());
+	    }
 
 		return midiaRepository.save(midia);
 	}
