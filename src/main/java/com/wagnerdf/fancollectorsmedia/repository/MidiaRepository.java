@@ -35,7 +35,7 @@ public interface MidiaRepository extends JpaRepository<Midia, Long> {
 
 	// Pesquisa por tipos e usuário
 	@Query("SELECT new com.wagnerdf.fancollectorsmedia.dto.MidiaListagemDto("
-			+ "m.id, m.capaUrl, m.midiaTipoNome, m.generos, m.tituloAlternativo) " + "FROM Midia m "
+			+ "m.id, m.capaUrl, m.midiaTipoNome, m.generos, m.tituloAlternativo, m.assistido) " + "FROM Midia m "
 			+ "WHERE m.cadastro.email = :email " + "AND (:tipos IS NULL OR m.midiaTipoNome IN :tipos) "
 			+ "ORDER BY m.tituloAlternativo ASC") // <-- aqui
 	Page<MidiaListagemDto> findByTiposAndUsuario(@Param("email") String email, @Param("tipos") List<String> tipos,
@@ -43,29 +43,32 @@ public interface MidiaRepository extends JpaRepository<Midia, Long> {
 
 	// Retorna todas as mídias de um cadastro como DTO
 	@Query("SELECT new com.wagnerdf.fancollectorsmedia.dto.MidiaListagemDto("
-			+ "m.id, m.capaUrl, m.midiaTipo.nome, m.generos, m.tituloAlternativo) "
+			+ "m.id, m.capaUrl, m.midiaTipo.nome, m.generos, m.tituloAlternativo, m.assistido) "
 			+ "FROM Midia m WHERE m.cadastro = :cadastro " + "ORDER BY m.tituloAlternativo ASC") // <-- aqui
 	List<MidiaListagemDto> findByCadastroDto(Cadastro cadastro);
 
 	// Retorna mídias paginadas de um cadastro pelo email como DTO
 	@Query("SELECT new com.wagnerdf.fancollectorsmedia.dto.MidiaListagemDto("
-			+ "m.id, m.capaUrl, m.midiaTipo.nome, m.generos, m.tituloAlternativo) "
+			+ "m.id, m.capaUrl, m.midiaTipo.nome, m.generos, m.tituloAlternativo, m.assistido) "
 			+ "FROM Midia m WHERE m.cadastro.email = :email " + "ORDER BY m.tituloAlternativo ASC") // <-- aqui
 	Page<MidiaListagemDto> findByCadastroEmailDto(String email, Pageable pageable);
 
 	// Lista por cadastroId
 	@Query("SELECT new com.wagnerdf.fancollectorsmedia.dto.MidiaListagemDto("
-			+ "m.id, m.capaUrl, mt.nome, m.generos, m.tituloAlternativo) " + "FROM Midia m JOIN m.midiaTipo mt "
-			+ "WHERE m.cadastro.id = :cadastroId " + "ORDER BY m.tituloAlternativo ASC") // <-- aqui
-	List<MidiaListagemDto> listarMidiasPorCadastro(@Param("cadastroId") Long cadastroId);
+		    + "m.id, m.capaUrl, mt.nome, m.generos, m.tituloAlternativo, m.assistido) "
+		    + "FROM Midia m JOIN m.midiaTipo mt "
+		    + "WHERE m.cadastro.id = :cadastroId "
+		    + "ORDER BY m.tituloAlternativo ASC")
+		List<MidiaListagemDto> listarMidiasPorCadastro(@Param("cadastroId") Long cadastroId);
 
 	// Pesquisa por tipos e usuário (sem paginação)
 	@Query("SELECT new com.wagnerdf.fancollectorsmedia.dto.MidiaListagemDto("
-			+ "m.id, m.capaUrl, m.midiaTipoNome, m.generos, m.tituloAlternativo) " + "FROM Midia m "
-			+ "WHERE m.cadastro.email = :email " + "AND (:tipos IS NULL OR m.midiaTipoNome IN :tipos) "
-			+ "ORDER BY m.tituloAlternativo ASC")
-	List<MidiaListagemDto> findByTiposAndUsuarioSemPaginacao(@Param("email") String email,
-			@Param("tipos") List<String> tipos);
+		    + "m.id, m.capaUrl, m.midiaTipoNome, m.generos, m.tituloAlternativo, m.assistido) "
+		    + "FROM Midia m "
+		    + "WHERE m.cadastro.email = :email "
+		    + "AND (:tipos IS NULL OR m.midiaTipoNome IN :tipos) "
+		    + "ORDER BY m.tituloAlternativo ASC")
+		List<MidiaListagemDto> findByTiposAndUsuarioSemPaginacao(@Param("email") String email, @Param("tipos") List<String> tipos);
 
 	// Conta o total de mídias de um usuário pelo email
 	long countByCadastroEmail(String email);

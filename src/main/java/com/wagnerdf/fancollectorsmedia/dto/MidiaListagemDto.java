@@ -11,12 +11,14 @@ public class MidiaListagemDto {
     private String midiaTipoNome;
     private String generos;
     private String tituloAlternativo;
+    private Boolean assistido; 
 
-    public MidiaListagemDto(Long id, String capaUrl, String midiaTipoNome, String generos, String tituloAlternativo) {
+    public MidiaListagemDto(Long id, String capaUrl, String midiaTipoNome, String generos, String tituloAlternativo, Boolean assistido) {
         this.id = id;
         this.capaUrl = capaUrl;
         this.midiaTipoNome = midiaTipoNome;
         this.generos = generos;
         this.tituloAlternativo = tituloAlternativo;
+        this.assistido = assistido;
     }
 }
