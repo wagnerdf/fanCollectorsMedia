@@ -85,7 +85,9 @@ public class SecurityConfig {
         	    "http://localhost:3000",
         	    "https://fan-collectors-frontend-app.vercel.app/",
         	    "http://localhost:8081",
-        	    "https://fancollectionmidia.netlify.app/"
+        	    "https://fancollectionmidia.netlify.app/",
+        	    "http://localhost:19006",  //modo desenvolvimento Expo
+        	    "https://expo.dev"         //quando roda via Expo web ou preview
         	));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
