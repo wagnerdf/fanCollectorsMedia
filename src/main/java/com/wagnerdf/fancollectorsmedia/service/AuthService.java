@@ -88,9 +88,11 @@ public class AuthService {
 	
 	@Transactional
 	public AuthResponseDto registerFull(CadastroRequestDto request) {
-	    if (usuarioRepository.findByLogin(request.getEmail()).isPresent()) {
-	        throw new EmailDuplicadoException("Esse e-mail já está em uso");
-	    }
+		String emailLower = request.getEmail().toLowerCase();
+
+		if (usuarioRepository.existsByLoginIgnoreCase(emailLower)) {
+		    throw new EmailDuplicadoException("Este e-mail já está cadastrado.");
+		}
 
 	    Papel papel = papelRepository.findByNome("ROLE_USER")
 	            .orElseThrow(() -> new RuntimeException("Papel ROLE_USER não encontrado"));
@@ -102,7 +104,7 @@ public class AuthService {
 	        .dataNascimento(request.getDataNascimento())
 	        .sexo(request.getSexo())
 	        .telefone(request.getTelefone())
-	        .email(request.getEmail())
+	        .email(emailLower)
 	        .dataCadastro(LocalDateTime.now())
 	        .status(StatusUsuario.ATIVO)
 	        .avatarUrl(request.getAvatarUrl())
@@ -113,7 +115,7 @@ public class AuthService {
 
 	    // Criar usuário para login
 	    Usuario usuario = Usuario.builder()
-	        .login(request.getEmail())
+	    	.login(emailLower)
 	        .senha(passwordEncoder.encode(request.getSenha()))
 	        .papel(papel)
 	        .cadastro(cadastro) // associa o usuário ao cadastro

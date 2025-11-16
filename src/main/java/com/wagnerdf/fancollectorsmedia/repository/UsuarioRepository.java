@@ -13,4 +13,8 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 	Optional<Usuario> findByCadastro(Cadastro cadastro);
 	
 	boolean existsByLogin(String login);
+	
+	// 🔥 Novo método case-insensitive
+	Optional<Usuario> findByLoginIgnoreCase(String login);
+	boolean existsByLoginIgnoreCase(String login);
 }
