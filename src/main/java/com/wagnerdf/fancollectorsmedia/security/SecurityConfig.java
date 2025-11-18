@@ -85,9 +85,9 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOriginPatterns(List.of(
         	    "http://localhost:3000",
-        	    "https://fan-collectors-frontend-app.vercel.app/",
+        	    "https://fan-collectors-frontend-app.vercel.app",
         	    "http://localhost:8081",
-        	    "https://fancollectionmidia.netlify.app/",
+        	    "https://fancollectionmidia.netlify.app",
         	    "http://localhost:19006",  //modo desenvolvimento Expo
         	    "https://expo.dev"         //quando roda via Expo web ou preview
         	));
