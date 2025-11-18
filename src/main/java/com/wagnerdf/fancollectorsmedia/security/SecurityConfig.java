@@ -58,6 +58,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
                     "/auth/**",
+                    "/tmdb/buscar/**",
+                    "/fanCollectorsMedia/api/tmdb/buscar/**", //Liberar busca tmdb
                     "/fanCollectorsMedia/auth/**",
                     "/api/hobbies",
                     "/cadastros/**"
