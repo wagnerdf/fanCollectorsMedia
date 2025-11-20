@@ -24,6 +24,12 @@ public class TmdbController {
     public ResponseEntity<?> buscar(@PathVariable String query) {
         return ResponseEntity.ok(tmdbService.buscarMidias(query));
     }	
+    
+    @GetMapping("/detalhes/{id}")
+    public ResponseEntity<?> detalhes(@PathVariable Integer id) {
+        return ResponseEntity.ok(tmdbService.buscarDetalhes(id));
+    }
+
 }
 
 

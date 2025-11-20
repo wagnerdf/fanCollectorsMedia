@@ -93,5 +93,96 @@ public class TmdbService {
             throw new RuntimeException("Erro ao buscar na API do TMDB", ex);
         }
     }
+    
+    public Map<String, Object> buscarDetalhes(Integer id) {
+        try {
+            String apiKey = System.getenv("REACT_APP_API_TMDB");
+
+            // Tentar como FILME
+            String movieUrl = "https://api.themoviedb.org/3/movie/" + id +
+                    "?api_key=" + apiKey + "&language=pt-BR";
+
+            // Tentar como SERIE
+            String tvUrl = "https://api.themoviedb.org/3/tv/" + id +
+                    "?api_key=" + apiKey + "&language=pt-BR";
+
+            Map<String, Object> dados = null;
+            String tipoMidia = null;
+
+            try {
+                dados = restTemplate.getForObject(movieUrl, Map.class);
+                tipoMidia = "Filme";
+            } catch (Exception e) {
+                try {
+                    dados = restTemplate.getForObject(tvUrl, Map.class);
+                    tipoMidia = "Série";
+                } catch (Exception ex2) {
+                    throw new RuntimeException("Mídia não encontrada no TMDB");
+                }
+            }
+
+            Map<String, Object> retorno = new HashMap<>();
+
+            retorno.put("formato_midia", tipoMidia);
+
+            retorno.put("titulo_original", 
+                    dados.get("original_title") != null ? dados.get("original_title")
+                                                         : dados.get("original_name"));
+
+            retorno.put("titulo_alternativo",
+                    dados.get("title") != null ? dados.get("title")
+                                               : dados.get("name"));
+
+            retorno.put("sinopse", dados.get("overview"));
+            retorno.put("capa_url", "https://image.tmdb.org/t/p/w500" + dados.get("poster_path"));
+            retorno.put("nota_media", dados.get("vote_average"));
+            retorno.put("linguagem", dados.get("original_language"));
+            retorno.put("classificacao_etaria", 
+                    dados.get("adult") != null && (boolean) dados.get("adult") ? "18+" : "Livre");
+
+            // Ano de lançamento
+            String data = tipoMidia.equals("Filme")
+                    ? (String) dados.get("release_date")
+                    : (String) dados.get("first_air_date");
+
+            retorno.put("ano_lancamento",
+                    (data != null && data.length() >= 4) ? data.substring(0, 4) : "");
+
+            // Gêneros
+            List<Map<String, Object>> generos = (List<Map<String, Object>>) dados.get("genres");
+            List<String> nomesGeneros = new ArrayList<>();
+            if (generos != null) {
+                for (Map<String, Object> g : generos) {
+                    nomesGeneros.add((String) g.get("name"));
+                }
+            }
+            retorno.put("generos", nomesGeneros);
+
+            // Duração
+            if (tipoMidia.equals("Filme")) {
+                retorno.put("duracao", dados.get("runtime"));
+            } else {
+                retorno.put("duracao", dados.get("episode_run_time"));
+            }
+
+            // Estúdio
+            List<Map<String, Object>> companias =
+                    (List<Map<String, Object>>) dados.get("production_companies");
+
+            List<String> nomesEstudios = new ArrayList<>();
+            if (companias != null) {
+                for (Map<String, Object> e : companias) {
+                    nomesEstudios.add((String) e.get("name"));
+                }
+            }
+            retorno.put("estudio", nomesEstudios);
+
+            return retorno;
+
+        } catch (Exception ex) {
+            throw new RuntimeException("Erro ao buscar detalhes da mídia", ex);
+        }
+    }
+
 
 }
