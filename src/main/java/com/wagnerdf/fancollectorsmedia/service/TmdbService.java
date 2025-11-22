@@ -11,8 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 @Service
 public class TmdbService {
 
@@ -20,32 +18,23 @@ public class TmdbService {
     private String apiKey;
 
     private final RestTemplate restTemplate = new RestTemplate();
-    private final ObjectMapper mapper = new ObjectMapper();
 
-    private String traduzirTipo(String tipo) {
-        return switch (tipo) {
-            case "movie" -> "Filme";
-            case "tv" -> "Série";
-            default -> tipo;
-        };
-    }
-
+    // --------------------------------------------------------------
+    // ----------------- BUSCAR MÍDIAS (LISTAGEM) -------------------
+    // --------------------------------------------------------------
     public List<Map<String, Object>> buscarMidias(String query) {
 
         try {
             String apiKey = System.getenv("REACT_APP_API_TMDB");
 
-            // URL TMDB
-            String url = "https://api.themoviedb.org/3/search/multi?query=" + 
-                    URLEncoder.encode(query, StandardCharsets.UTF_8) + 
-                    "&api_key=" + apiKey + 
+            String url = "https://api.themoviedb.org/3/search/multi?query=" +
+                    URLEncoder.encode(query, StandardCharsets.UTF_8) +
+                    "&api_key=" + apiKey +
                     "&language=pt-BR";
 
-            RestTemplate restTemplate = new RestTemplate();
             Map<String, Object> response = restTemplate.getForObject(url, Map.class);
 
             List<Map<String, Object>> results = (List<Map<String, Object>>) response.get("results");
-
             List<Map<String, Object>> listaFinal = new ArrayList<>();
 
             for (Map<String, Object> item : results) {
@@ -53,35 +42,32 @@ public class TmdbService {
                 String mediaType = (String) item.get("media_type");
                 if (mediaType == null) continue;
 
-                // Só aceitaremos movie e tv
+                // Aceitar apenas movie ou tv
                 if (!mediaType.equals("movie") && !mediaType.equals("tv")) continue;
 
                 String tituloAlternativo;
                 String ano;
 
-                // Filme
                 if (mediaType.equals("movie")) {
                     tituloAlternativo = (String) item.get("title");
-
                     String releaseDate = (String) item.get("release_date");
-                    ano = (releaseDate != null && releaseDate.length() >= 4)
-                            ? releaseDate.substring(0, 4)
-                            : "";
-                }
-                // Série
-                else {
-                    tituloAlternativo = (String) item.get("name");
 
+                    ano = (releaseDate != null && releaseDate.length() >= 4)
+                            ? releaseDate.substring(0, 4) : "";
+
+                } else {
+                    tituloAlternativo = (String) item.get("name");
                     String firstAirDate = (String) item.get("first_air_date");
+
                     ano = (firstAirDate != null && firstAirDate.length() >= 4)
-                            ? firstAirDate.substring(0, 4)
-                            : "";
+                            ? firstAirDate.substring(0, 4) : "";
                 }
 
                 Map<String, Object> novoItem = new HashMap<>();
                 novoItem.put("id", item.get("id"));
                 novoItem.put("titulo_alternativo", tituloAlternativo);
                 novoItem.put("tipo", mediaType.equals("movie") ? "Filme" : "Série");
+                novoItem.put("media_type", mediaType); // 🔥 ESSENCIAL
                 novoItem.put("ano", ano);
 
                 listaFinal.add(novoItem);
@@ -93,43 +79,26 @@ public class TmdbService {
             throw new RuntimeException("Erro ao buscar na API do TMDB", ex);
         }
     }
-    
-    public Map<String, Object> buscarDetalhes(Integer id) {
+
+    // --------------------------------------------------------------
+    // --------------- BUSCAR DETALHES (COM CREDITS) ----------------
+    // --------------------------------------------------------------
+    public Map<String, Object> buscarDetalhes(Integer id, String mediaType) {
         try {
-            String apiKey = System.getenv("REACT_APP_API_TMDB");
+            String tipoEndpoint = mediaType.equals("movie") ? "movie" : "tv";
+            String tipoMidia = mediaType.equals("movie") ? "Filme" : "Série";
 
-            // URL base
-            String movieUrl = "https://api.themoviedb.org/3/movie/" + id +
+            String baseUrl = "https://api.themoviedb.org/3/" + tipoEndpoint + "/" + id +
                     "?api_key=" + apiKey + "&language=pt-BR";
 
-            String movieCreditsUrl = "https://api.themoviedb.org/3/movie/" + id +
+            String creditsUrl = "https://api.themoviedb.org/3/" + tipoEndpoint + "/" + id +
                     "/credits?api_key=" + apiKey + "&language=pt-BR";
 
-            String tvUrl = "https://api.themoviedb.org/3/tv/" + id +
-                    "?api_key=" + apiKey + "&language=pt-BR";
+            Map<String, Object> dados =
+                    restTemplate.getForObject(baseUrl, Map.class);
 
-            String tvCreditsUrl = "https://api.themoviedb.org/3/tv/" + id +
-                    "/credits?api_key=" + apiKey + "&language=pt-BR";
-
-            Map<String, Object> dados;
-            Map<String, Object> creditos;
-            String tipoMidia;
-
-            // Primeiro tenta FILME
-            try {
-                dados = restTemplate.getForObject(movieUrl, Map.class);
-                creditos = restTemplate.getForObject(movieCreditsUrl, Map.class);
-                tipoMidia = "Filme";
-            } catch (Exception e) {
-                // Depois tenta SÉRIE
-                try {
-                    dados = restTemplate.getForObject(tvUrl, Map.class);
-                    creditos = restTemplate.getForObject(tvCreditsUrl, Map.class);
-                    tipoMidia = "Série";
-                } catch (Exception ex2) {
-                    throw new RuntimeException("Mídia não encontrada no TMDB");
-                }
-            }
+            Map<String, Object> creditos =
+                    restTemplate.getForObject(creditsUrl, Map.class);
 
             Map<String, Object> retorno = new HashMap<>();
 
@@ -137,11 +106,11 @@ public class TmdbService {
 
             retorno.put("titulo_original",
                     dados.get("original_title") != null ? dados.get("original_title")
-                                                         : dados.get("original_name"));
+                            : dados.get("original_name"));
 
             retorno.put("titulo_alternativo",
                     dados.get("title") != null ? dados.get("title")
-                                               : dados.get("name"));
+                            : dados.get("name"));
 
             retorno.put("sinopse", dados.get("overview"));
             retorno.put("capa_url", "https://image.tmdb.org/t/p/w500" + dados.get("poster_path"));
@@ -150,8 +119,10 @@ public class TmdbService {
             retorno.put("classificacao_etaria",
                     dados.get("adult") != null && (boolean) dados.get("adult") ? "18+" : "Livre");
 
-            // Ano de lançamento
-            String data = tipoMidia.equals("Filme")
+            // -------------------------------
+            // ANO DE LANÇAMENTO
+            // -------------------------------
+            String data = mediaType.equals("movie")
                     ? (String) dados.get("release_date")
                     : (String) dados.get("first_air_date");
 
@@ -163,6 +134,7 @@ public class TmdbService {
             // -------------------------------
             List<Map<String, Object>> generos = (List<Map<String, Object>>) dados.get("genres");
             List<String> nomesGeneros = new ArrayList<>();
+
             if (generos != null) {
                 for (Map<String, Object> g : generos) {
                     nomesGeneros.add((String) g.get("name"));
@@ -173,7 +145,7 @@ public class TmdbService {
             // -------------------------------
             // DURAÇÃO
             // -------------------------------
-            if (tipoMidia.equals("Filme")) {
+            if (mediaType.equals("movie")) {
                 retorno.put("duracao", dados.get("runtime"));
             } else {
                 List<Integer> epTimes = (List<Integer>) dados.get("episode_run_time");
@@ -182,7 +154,7 @@ public class TmdbService {
             }
 
             // -------------------------------
-            // ESTUDIOS
+            // ESTÚDIOS
             // -------------------------------
             List<Map<String, Object>> companias =
                     (List<Map<String, Object>>) dados.get("production_companies");
@@ -196,21 +168,21 @@ public class TmdbService {
             retorno.put("estudio", nomesEstudios);
 
             // -------------------------------
-            // ARTISTAS (CAST)
+            // ARTISTAS
             // -------------------------------
             List<Map<String, Object>> cast =
                     (List<Map<String, Object>>) creditos.get("cast");
 
             List<String> artistas = new ArrayList<>();
             if (cast != null) {
-                for (int i = 0; i < Math.min(10, cast.size()); i++) { // pegar até 10
+                for (int i = 0; i < Math.min(10, cast.size()); i++) {
                     artistas.add((String) cast.get(i).get("name"));
                 }
             }
             retorno.put("artistas", artistas);
 
             // -------------------------------
-            // DIRETORES (CREW)
+            // DIRETORES
             // -------------------------------
             List<Map<String, Object>> crew =
                     (List<Map<String, Object>>) creditos.get("crew");
