@@ -98,23 +98,33 @@ public class TmdbService {
         try {
             String apiKey = System.getenv("REACT_APP_API_TMDB");
 
-            // Tentar como FILME
+            // URL base
             String movieUrl = "https://api.themoviedb.org/3/movie/" + id +
                     "?api_key=" + apiKey + "&language=pt-BR";
 
-            // Tentar como SERIE
+            String movieCreditsUrl = "https://api.themoviedb.org/3/movie/" + id +
+                    "/credits?api_key=" + apiKey + "&language=pt-BR";
+
             String tvUrl = "https://api.themoviedb.org/3/tv/" + id +
                     "?api_key=" + apiKey + "&language=pt-BR";
 
-            Map<String, Object> dados = null;
-            String tipoMidia = null;
+            String tvCreditsUrl = "https://api.themoviedb.org/3/tv/" + id +
+                    "/credits?api_key=" + apiKey + "&language=pt-BR";
 
+            Map<String, Object> dados;
+            Map<String, Object> creditos;
+            String tipoMidia;
+
+            // Primeiro tenta FILME
             try {
                 dados = restTemplate.getForObject(movieUrl, Map.class);
+                creditos = restTemplate.getForObject(movieCreditsUrl, Map.class);
                 tipoMidia = "Filme";
             } catch (Exception e) {
+                // Depois tenta SÉRIE
                 try {
                     dados = restTemplate.getForObject(tvUrl, Map.class);
+                    creditos = restTemplate.getForObject(tvCreditsUrl, Map.class);
                     tipoMidia = "Série";
                 } catch (Exception ex2) {
                     throw new RuntimeException("Mídia não encontrada no TMDB");
@@ -125,7 +135,7 @@ public class TmdbService {
 
             retorno.put("formato_midia", tipoMidia);
 
-            retorno.put("titulo_original", 
+            retorno.put("titulo_original",
                     dados.get("original_title") != null ? dados.get("original_title")
                                                          : dados.get("original_name"));
 
@@ -137,7 +147,7 @@ public class TmdbService {
             retorno.put("capa_url", "https://image.tmdb.org/t/p/w500" + dados.get("poster_path"));
             retorno.put("nota_media", dados.get("vote_average"));
             retorno.put("linguagem", dados.get("original_language"));
-            retorno.put("classificacao_etaria", 
+            retorno.put("classificacao_etaria",
                     dados.get("adult") != null && (boolean) dados.get("adult") ? "18+" : "Livre");
 
             // Ano de lançamento
@@ -148,7 +158,9 @@ public class TmdbService {
             retorno.put("ano_lancamento",
                     (data != null && data.length() >= 4) ? data.substring(0, 4) : "");
 
-            // Gêneros
+            // -------------------------------
+            // GÊNEROS
+            // -------------------------------
             List<Map<String, Object>> generos = (List<Map<String, Object>>) dados.get("genres");
             List<String> nomesGeneros = new ArrayList<>();
             if (generos != null) {
@@ -158,14 +170,20 @@ public class TmdbService {
             }
             retorno.put("generos", nomesGeneros);
 
-            // Duração
+            // -------------------------------
+            // DURAÇÃO
+            // -------------------------------
             if (tipoMidia.equals("Filme")) {
                 retorno.put("duracao", dados.get("runtime"));
             } else {
-                retorno.put("duracao", dados.get("episode_run_time"));
+                List<Integer> epTimes = (List<Integer>) dados.get("episode_run_time");
+                retorno.put("duracao",
+                        (epTimes != null && !epTimes.isEmpty()) ? epTimes.get(0) : null);
             }
 
-            // Estúdio
+            // -------------------------------
+            // ESTUDIOS
+            // -------------------------------
             List<Map<String, Object>> companias =
                     (List<Map<String, Object>>) dados.get("production_companies");
 
@@ -177,12 +195,40 @@ public class TmdbService {
             }
             retorno.put("estudio", nomesEstudios);
 
+            // -------------------------------
+            // ARTISTAS (CAST)
+            // -------------------------------
+            List<Map<String, Object>> cast =
+                    (List<Map<String, Object>>) creditos.get("cast");
+
+            List<String> artistas = new ArrayList<>();
+            if (cast != null) {
+                for (int i = 0; i < Math.min(10, cast.size()); i++) { // pegar até 10
+                    artistas.add((String) cast.get(i).get("name"));
+                }
+            }
+            retorno.put("artistas", artistas);
+
+            // -------------------------------
+            // DIRETORES (CREW)
+            // -------------------------------
+            List<Map<String, Object>> crew =
+                    (List<Map<String, Object>>) creditos.get("crew");
+
+            List<String> diretores = new ArrayList<>();
+            if (crew != null) {
+                for (Map<String, Object> member : crew) {
+                    if ("Director".equals(member.get("job"))) {
+                        diretores.add((String) member.get("name"));
+                    }
+                }
+            }
+            retorno.put("diretores", diretores);
+
             return retorno;
 
         } catch (Exception ex) {
             throw new RuntimeException("Erro ao buscar detalhes da mídia", ex);
         }
     }
-
-
 }
