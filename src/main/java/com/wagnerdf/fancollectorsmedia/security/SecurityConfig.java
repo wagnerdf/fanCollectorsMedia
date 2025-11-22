@@ -59,6 +59,7 @@ public class SecurityConfig {
                 .requestMatchers(
                     "/auth/**",
                     "/tmdb/buscar/**",
+                    "/tmdb/detalhes/**",
                     "/fanCollectorsMedia/api/tmdb/buscar/**", //Liberar busca tmdb
                     "/fanCollectorsMedia/auth/**",
                     "/api/hobbies",
