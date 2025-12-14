@@ -25,7 +25,6 @@ public class TmdbService {
     public List<Map<String, Object>> buscarMidias(String query) {
 
         try {
-            String apiKey = System.getenv("REACT_APP_API_TMDB");
 
             String url = "https://api.themoviedb.org/3/search/multi?query=" +
                     URLEncoder.encode(query, StandardCharsets.UTF_8) +
