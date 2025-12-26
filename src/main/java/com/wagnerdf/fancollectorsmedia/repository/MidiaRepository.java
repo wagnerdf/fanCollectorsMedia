@@ -80,7 +80,8 @@ public interface MidiaRepository extends JpaRepository<Midia, Long> {
 			        m.midia_tipo_nome,
 			        m.generos,
 			        m.titulo_alternativo,
-			        m.nota_media
+			        m.nota_media,
+			        m.assistido
 			    FROM midia m
 			    WHERE m.cadastro_id = :cadastroId
 			    ORDER BY m.titulo_alternativo ASC
@@ -94,7 +95,7 @@ public interface MidiaRepository extends JpaRepository<Midia, Long> {
 	
 	// Buscar mídias de um cadastro cujo campo "generos" contém o nome informado, retornando DTO
 	@Query("SELECT new com.wagnerdf.fancollectorsmedia.dto.MidiaListagemMobileDto("
-		       + "m.id, m.capaUrl, m.midiaTipo.nome, m.generos, m.tituloAlternativo, m.notaMedia) "
+		       + "m.id, m.capaUrl, m.midiaTipo.nome, m.generos, m.tituloAlternativo, m.notaMedia, m.assistido) "
 		       + "FROM Midia m "
 		       + "WHERE m.cadastro.id = :cadastroId "
 		       + "AND ( LOWER(REPLACE(m.generos, ' ', '')) = LOWER(REPLACE(:nomeGenero, ' ', '')) "
@@ -109,7 +110,7 @@ public interface MidiaRepository extends JpaRepository<Midia, Long> {
 	
 	// Buscar mídias de um cadastro por tipo de midia, retornando DTO
 	@Query("SELECT new com.wagnerdf.fancollectorsmedia.dto.MidiaListagemMobileDto("
-		       + "m.id, m.capaUrl, m.midiaTipoNome, m.generos, m.tituloAlternativo, m.notaMedia) "
+		       + "m.id, m.capaUrl, m.midiaTipoNome, m.generos, m.tituloAlternativo, m.notaMedia, m.assistido) "
 		       + "FROM Midia m "
 		       + "WHERE m.cadastro.id = :cadastroId "
 		       + "AND LOWER(m.midiaTipoNome) = LOWER(:tipoMidia) "

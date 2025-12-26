@@ -262,7 +262,7 @@ public class MidiaService {
 
 		List<MidiaListagemMobileDto> midias = resultados.stream()
 				.map(r -> new MidiaListagemMobileDto(((Number) r[0]).longValue(), (String) r[1], (String) r[2],
-						(String) r[3], (String) r[4], r[5] != null ? ((Number) r[5]).doubleValue() : null))
+						(String) r[3], (String) r[4], r[5] != null ? ((Number) r[5]).doubleValue() : null, (Boolean) r[6]))
 				.toList();
 
 		Map<String, Object> response = new HashMap<>();

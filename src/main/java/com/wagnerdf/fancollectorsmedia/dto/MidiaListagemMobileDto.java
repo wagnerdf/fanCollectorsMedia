@@ -14,4 +14,5 @@ public class MidiaListagemMobileDto {
 	private String generos;
 	private String tituloAlternativo;
 	private Double notaMedia;
+	private Boolean assistido;
 }
