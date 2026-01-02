@@ -22,9 +22,7 @@ public class JwtService {
     @Value("${api.config.secret}")
     private String secretKey; // agora vem do application.properties / ambiente
 
-    // private static final long ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 60 * 2; // 2 horas
-    
-    private static final long ACCESS_TOKEN_EXPIRATION = 1000L * 60L * 2L;
+    private static final long ACCESS_TOKEN_EXPIRATION = 1000L * 60L * 30L; // 30 minutos
     
     private static final long REFRESH_TOKEN_EXPIRATION = 1000L * 60L * 60L * 24L * 7L; // 7 dias
 
