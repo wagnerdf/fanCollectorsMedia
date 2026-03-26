@@ -214,6 +214,7 @@ public class TmdbService {
         return switch (genero) {
             case "Action" -> "Ação";
             case "Adventure" -> "Aventura";
+            case "Action & Adventure" -> "Ação e Aventura";
             case "Comedy" -> "Comédia";
             case "Mystery" -> "Mistério";
             case "Horror" -> "Terror";
