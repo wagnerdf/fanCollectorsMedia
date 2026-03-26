@@ -136,7 +136,11 @@ public class TmdbService {
 
             if (generos != null) {
                 for (Map<String, Object> g : generos) {
-                    nomesGeneros.add((String) g.get("name"));
+                	String genero = (String) g.get("name");
+
+                	genero = normalizarGenero(genero);
+
+                	nomesGeneros.add(genero);
                 }
             }
             retorno.put("generos", nomesGeneros);
@@ -202,4 +206,19 @@ public class TmdbService {
             throw new RuntimeException("Erro ao buscar detalhes da mídia", ex);
         }
     }
+    
+    // Tratamento caso a api TMDB traga nome em inglês em gêneros
+    private String normalizarGenero(String genero) {
+        if (genero == null) return null;
+
+        return switch (genero) {
+            case "Action" -> "Ação";
+            case "Adventure" -> "Aventura";
+            case "Comedy" -> "Comédia";
+            case "Mystery" -> "Mistério";
+            case "Horror" -> "Terror";
+            default -> genero; // mantém se já estiver em PT
+        };
+    }
+    
 }
